@@ -15,7 +15,7 @@ instructions:
 install the above software before first use and edit the path in the python code to match your setup.
 make sure to install the python libs!
 
-tip: read "opt format.txt" it has important info about the options.
+tip: read "opt.txt" it has important info about the options.
 
 tip: put all these files in a project folder
 
@@ -23,11 +23,11 @@ tip: use multi-thread openscad version: [http://files.openscad.org/snapshots/Ope
 
 use:
 1. adjust path at top of "main.py" (folders for output and preview created when run)
-2. adjust the "bs" (lid sides) value in "make shells.scad" for a new look if you like
-3. adjust values in "opt.txt" in the format as defined in "opt format.txt"
-4. make a backup of "opt.txt" so you can reuse these values in the future. (optional)
+2. (optional) adjust the "bs" (lid sides) value in "make shells.scad"
+3. (optional) adjust values in "opt.txt"
+4. (optional) make a backup of "opt.txt" so you can reuse these values in the future.
 5. open a python shell and run "main.py". (you may be able to just double click it)  
-you will be prompted weather to use multi-threadding (if available) then nub count, a difficulty level and a shift mode value.  
+you will be prompted whether to use multi-threadding (if available) then nub count, a difficulty level and a shift mode value.  
 shifting is where each row of the maze is shifted and wrapped for the illusion of a bigger maze.  
 for shift mode 3, also input how much. it will be constrained by modulus, so large nums will not break it.  
 stl's go in the "\stl's\" folder and previews in the "\prev\" folder.

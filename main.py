@@ -68,16 +68,14 @@ prepwd()
 scadthreading=False
 ver=sp.check_output(shlex.split(openscad_com+" --version"),shell=True)
 ver=str(ver).replace("b'OpenSCAD version ","").replace("\\r\\n'","").split(".")
-if int(ver[0])>=2015:
-    if int(ver[0])>=2018 and int(ver[1])>=5 and int(ver[2])>=30:
-        scadthreading=(input("multi-threading available. use it(y/n)?")=="y")
-    else:
-        scadthreading=False
-else:
+if not int(ver[0])>=2015:
     input("ERROR: invalid scad version. must be at least 2015.xx.xx .")
     exit()
-            
-pi=3.14159265358
+if int(ver[0])>=2018 and int(ver[1])>=5 and int(ver[2])>=30 or int(ver[0])>=2018 and int(ver[1])>5 or int(ver[0])>2018:
+    scadthreading=(str(input("multi-threading available. use it(y/n)?")).lower()=="y")
+else:
+    scadthreading=False  
+
 d2=0
 shell=0
 '''def pythread1():
@@ -217,34 +215,30 @@ def gen():
         wt=mwt
         if tpp<1:
             if(shell==0):
-                d=(mw*us*p)/pi+wt-marge*2
+                d=(mw*us*p)/np.pi+wt-marge*2
                 '''else:
-                    d=(mw*us)/pi'''
+                    d=(mw*us)/np.pi'''
             else:
                 if shell==tp:
                     d=d2
                 else:
                     d=d2+us+wt+marge*2
                 if i==0:
-                    mw=int(math.ceil((d/p+us)*pi/2/us))
+                    mw=int(math.ceil((d/p+us)*np.pi/2/us))
                     if shell==(shells-2):
                         mh+=1
                 else:
                     if shell==(shells-1):
-                        mw=int(math.ceil((d/p+us)*pi/2/us))
+                        mw=int(math.ceil((d/p+us)*np.pi/2/us))
                     else:
-                        mw=int(math.ceil((d2/p+us)*pi/2/us))
+                        mw=int(math.ceil((d2/p+us)*np.pi/2/us))
                 mh+=1
         else:
             d=d2+us+wt+marge*2
-            mw=int(math.ceil((d/p+us)*pi/2/us))
+            mw=int(math.ceil((d/p+us)*np.pi/2/us))
             mh+=1
         #print(d)
         
-        if tpp<1:
-            maze=open("maze.scad","w")
-        else:
-            maze=open("maze.scad","a+")
         #stag/shift
         stag=np.zeros(mh)
         if(stagmode==1 or stagmode==2):
@@ -260,49 +254,36 @@ def gen():
         st=rd.randint(0,mw-1)
         ex=rd.randint(0,mw-1)
         marr=genmaze(int(mw),int(mh),stag,st,ex)
+
+        s="["
+        for y in range(0,mh):
+            s=s+"["
+            for x in range(0,mw*p):
+                x2=x%mw
+                r=marr[x2,y,1]==0
+                u=marr[x2,y,3]==0
+                if(u and r):
+                    s=s+"3,"
+                elif(u):
+                    s=s+"2,"
+                elif(r):
+                    s=s+"1,"
+                else:
+                    s=s+"0,"
+            s=s[0:-1]+"],"
+
+        rd.seed(int(round(time.time() * 1000)))
         if tpp<1:
-            maze.write("maze1=")
-            s="["
-            for y in range(0,mh):
-                s=s+"["
-                for x in range(0,mw*p):
-                    x2=x%mw
-                    r=marr[x2,y,1]==0
-                    u=marr[x2,y,3]==0
-                    if(u and r):
-                        s=s+"3,"
-                    elif(u):
-                        s=s+"2,"
-                    elif(r):
-                        s=s+"1,"
-                    else:
-                        s=s+"0,"
-                s=s[0:-1]+"],"
-            rd.seed(int(round(time.time() * 1000)))
-            maze.write(s[0:-1]+"];\nh1="+str(mh)+";\nw1="+str(mw*p)+";\nst1="+str(st)+";\nex1="+str(ex)+";\n")
-            #maze.write("maze2=[];\n")
-            #maze.write("h2=0;\nw2=0;\nst2=0;\nex2=0;")
+            with open("maze.scad","w") as maze:
+                maze.write("maze1=")
+                maze.write(s[0:-1]+"];\nh1="+str(mh)+";\nw1="+str(mw*p)+";\nst1="+str(st)+";\nex1="+str(ex)+";\n")
+                #maze.write("maze2=[];\n")
+                #maze.write("h2=0;\nw2=0;\nst2=0;\nex2=0;")
         else:
-            maze.write("maze2=")
-            s="["
-            for y in range(0,mh):
-                s=s+"["
-                for x in range(0,mw*p):
-                    x2=x%mw
-                    r=marr[x2,y,1]==0
-                    u=marr[x2,y,3]==0
-                    if(u and r):
-                        s=s+"3,"
-                    elif(u):
-                        s=s+"2,"
-                    elif(r):
-                        s=s+"1,"
-                    else:
-                        s=s+"0,"
-                s=s[0:-1]+"],"
-            rd.seed(int(round(time.time() * 1000)))
-            maze.write(s[0:-1]+"];\nh2="+str(mh)+";\nw2="+str(mw*p)+";\nst2="+str(st)+";\nex2="+str(ex)+";")
-        maze.close()
+            with open("maze.scad","a+") as maze:
+                maze.write("maze2=")
+                maze.write(s[0:-1]+"];\nh2="+str(mh)+";\nw2="+str(mw*p)+";\nst2="+str(st)+";\nex2="+str(ex)+";")
+
         base=1
         lid=0
         if(shell==shells-1):
@@ -312,9 +293,10 @@ def gen():
             mos=0
         else:
             mos=shells-shell-2
-        cfg=open("config.scad","w+")
-        cfg.write("p="+str(p)+";\ntpp="+str(tpp)+";\nis="+str(shell)+";\nos="+str(mos)+";\nlid="+str(lid)+";\nbase="+str(base)+";\niw="+str(wt)+";\nid="+str(d)+";\ns="+str(us)+";\ni="+str(i)+";\nbd="+str(d+wt*2+us*2)+";\nm="+str(marge)+";")
-        cfg.close()
+        with open("config.scad","w+") as cfg:
+            cfg.write("p="+str(p)+";\ntpp="+str(tpp)+";\nis="+str(shell)+";\nos="+str(mos)+";\nlid="+str(lid)
+                      +";\nbase="+str(base)+";\niw="+str(wt)+";\nid="+str(d)+";\ns="+str(us)+";\ni="+str(i)
+                      +";\nbd="+str(d+wt*2+us*2)+";\nm="+str(marge)+";")
         if(shell<shells-2):
             d2=d
         time.sleep(2)
@@ -359,18 +341,23 @@ stagconst=0
 stagmode=int(input("shift mode (0=none 1=random 2=random change 3=twist):"))
 if(stagmode==3):
     stagconst=abs(int(input("twist amount:")))
-opt=open("opt.txt","r")
-shells=int(opt.readline())+1#levels
-marge=float(opt.readline())
-i=int(opt.readline())
-tp=int(opt.readline())
-if tp>=shells:
-    tp=0
-us=float(opt.readline())
-mh=int(opt.readline())
-mw=int(opt.readline())
-mwt=float(opt.readline())
-opt.close()
+with open("opt.txt","r") as opt:
+    while True:
+        line=opt.readline().strip()
+        if not line: continue
+        word=line.split()[0]
+        if not word.startswith("#"): break
+    shells=int(word)+1#levels
+    marge=float(opt.readline().split()[0])
+    i=int(opt.readline().split()[0])
+    tp=int(opt.readline().split()[0])
+    if tp>=shells:
+        tp=0
+    us=float(opt.readline().split()[0])
+    mh=int(opt.readline().split()[0])
+    mw=int(opt.readline().split()[0])
+    mwt=float(opt.readline().split()[0])
+
 while(not gen()):
     continue
 print("done!")

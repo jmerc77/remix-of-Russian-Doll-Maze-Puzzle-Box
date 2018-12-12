@@ -1,0 +1,12 @@
+#If you change the options generate & export all stl's
+#
+#Top of file...
+
+4      #Number levels (int; part count=levels+1)
+0.2   #Tolerance (so they fit;ex. 0.2;float)
+1      #Maze on inside (1=yes,0=no;int)
+0      #inside vs. outside transition shell (int; 0 for none;1 to [levels] for transition)
+5      #Unit spacing (mm;float)
+10    #Units tall on inner most (int)
+10    #Units wide on inner most (as if maze is on the outside;int)
+2       #Wall thickness (mm;excluding maze thickness;float)
