@@ -8,6 +8,7 @@
 
 # do not edit below unless you know what you are doing!
 import os
+import configparser
 import platform
 from shutil import copy, rmtree
 import shlex
@@ -469,18 +470,24 @@ if __name__ == "__main__":
     stagmode = int(input("shift mode (0=none 1=random 2=random change 3=twist):"))
     if stagmode == 3:
         stagconst = abs(int(input("twist amount:")))
-    opt = open("opt.txt", "r")
-    shells = int(opt.readline()) + 1  # levels
-    marge = float(opt.readline())
-    i = int(opt.readline())
-    tp = int(opt.readline())
+
+    config = configparser.ConfigParser()
+    config.read("opt.ini")
+    if "DEFAULT" not in config:
+        input("ERROR: No DEFAULT section in opt.ini")
+        exit(1)
+    config = config["DEFAULT"]
+
+    shells = config.getint("levels") + 1  # levels
+    marge = config.getfloat("tolerance")
+    i = config.getint("maze_inside")
+    tp = config.getint("transition_shell")
     if tp >= shells:
         tp = 0
-    us = float(opt.readline())
-    mh = int(opt.readline())
-    mw = int(opt.readline())
-    mwt = float(opt.readline())
-    opt.close()
+    us = config.getfloat("spacing")
+    mh = config.getint("units_tall")  # int(opt.readline())
+    mw = config.getint("units_wide")  # int(opt.readline())
+    mwt = config.getfloat("wall_thickness")  # float(opt.readline())
     while not gen():
         continue
     print("done!")
