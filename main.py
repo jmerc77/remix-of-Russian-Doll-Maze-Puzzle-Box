@@ -5,7 +5,7 @@ openscad_exe = "P:/Program Files/OpenSCAD"
 
 # do not edit below unless you know what you are doing!
 import os
-from shutil import copy
+from shutil import copy, rmtree
 import shlex
 import random as rd
 import time
@@ -32,15 +32,6 @@ if pythreads==1:
         pythreads=1"""
 
 
-def rmfiles(d):
-    for f in os.listdir(d):
-        try:
-            if os.path.isfile(d + "/" + f):
-                os.remove(d + "/" + f)
-        except Exception as e:
-            print(e)
-
-
 def prepwd():
     if os.path.exists(openscad_exe) == False:
         input("ERROR: openscad path not found.")
@@ -48,11 +39,11 @@ def prepwd():
     if os.path.exists("stl's") == False:
         os.mkdir("stl's", 777)
     else:
-        rmfiles("stl's")
+        rmtree("stl's")
     if os.path.exists("prev") == False:
         os.mkdir("prev", 777)
     else:
-        rmfiles("prev")
+        rmtree("prev")
 
     """if pythreads>0:
         if(os.path.exists(curdir+"/threads")==False):
@@ -62,7 +53,7 @@ def prepwd():
                     os.mkdir("threads/"+str(d),777)
                 copy(curdir+"/make_shells.scad",curdir+"/threads/"+str(d)+"/")
         else:
-            rmfiles("threads")
+            rmtree("threads")
             for d in range(pythreads):
                 if(os.path.exists(curdir+"/threads/"+str(d))==False):
                     os.mkdir("threads/"+str(d),777)
