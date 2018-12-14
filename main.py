@@ -64,11 +64,11 @@ def prepwd():
 
     if os.path.exists(STL_DIR):
         rmtree(STL_DIR)
-    os.mkdir(STL_DIR, 777)
+    os.mkdir(STL_DIR)  # Default perms: world-writable
 
     if os.path.exists(PREV_DIR):
         rmtree(PREV_DIR)
-    os.mkdir(PREV_DIR, 777)
+    os.mkdir(PREV_DIR)  # Default perms: world-writable
 
     """if pythreads>0:
         if(os.path.exists(curdir+"/threads")==False):
@@ -124,8 +124,7 @@ def execscad(threadid=0):
         ]
     )
     print(cmd)
-
-    #     return None
+    sp.run(cmd)
     # else:
     #     copy(curdir+"/maze.scad",curdir+"/threads/"+str(threadid)+"/")
     #     copy(curdir+"/config.scad",curdir+"/threads/"+str(threadid)+"/")
@@ -139,7 +138,7 @@ def udnbers(n, vi, nc, mw, mh, stag):
         for x in range(0, mw):
             x3 = int((x + stag[y]) % mw)
             x2 = [x - 1, x + 1, x, x]
-            x4 = [x3 - 1, x3 + 1, x3, x3]
+            # unused: x4 = [x3 - 1, x3 + 1, x3, x3]
             y2 = [y, y, y - 1, y + 1]
             for i in range(0, 4):
                 if stag[y] % mw > 0:
@@ -480,7 +479,7 @@ if __name__ == "__main__":
 
     shells = config.getint("levels") + 1  # levels
     marge = config.getfloat("tolerance")
-    i = config.getint("maze_inside")
+    i = config.getbool("maze_inside")
     tp = config.getint("transition_shell")
     if tp >= shells:
         tp = 0
