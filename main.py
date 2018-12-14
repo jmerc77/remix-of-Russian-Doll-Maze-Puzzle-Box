@@ -74,7 +74,6 @@ else:
     input("ERROR: invalid scad version. must be at least 2015.xx.xx .")
     exit()
 
-pi = 3.14159265358
 d2 = 0
 shell = 0
 """def pythread1():
@@ -246,27 +245,27 @@ def gen():
         wt = mwt
         if tpp < 1:
             if shell == 0:
-                d = (mw * us * p) / pi + wt - marge * 2
+                d = (mw * us * p) / math.pi + wt - marge * 2
                 """else:
-                    d=(mw*us)/pi"""
+                    d=(mw*us)/math.pi"""
             else:
                 if shell == tp:
                     d = d2
                 else:
                     d = d2 + us + wt + marge * 2
                 if i == 0:
-                    mw = int(math.ceil((d / p + us) * pi / 2 / us))
+                    mw = int(math.ceil((d / p + us) * math.pi / 2 / us))
                     if shell == (shells - 2):
                         mh += 1
                 else:
                     if shell == (shells - 1):
-                        mw = int(math.ceil((d / p + us) * pi / 2 / us))
+                        mw = int(math.ceil((d / p + us) * math.pi / 2 / us))
                     else:
-                        mw = int(math.ceil((d2 / p + us) * pi / 2 / us))
+                        mw = int(math.ceil((d2 / p + us) * math.pi / 2 / us))
                 mh += 1
         else:
             d = d2 + us + wt + marge * 2
-            mw = int(math.ceil((d / p + us) * pi / 2 / us))
+            mw = int(math.ceil((d / p + us) * math.pi / 2 / us))
             mh += 1
         # print(d)
 
