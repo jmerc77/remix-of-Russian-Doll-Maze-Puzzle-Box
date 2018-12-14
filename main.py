@@ -1,23 +1,29 @@
-# path to openscad excluding the executable:
-openscad_exe = "P:/Program Files/OpenSCAD"
-# never use "\" in the above path (use "\\" instead)!!!
-# never put the trailing slashes in the above path!!!
+#!/usr/bin/env python
+
+# If you keep OpenSCAD in an unusual location, uncomment the following line of code and
+# set it to the full path to the openscad executable.
+# Note: Windows/python now support forward-slash characters in paths, so please use
+#       those instead of backslashes which create a lot of confusion in code strings.
+# OPENSCAD_PATH = "C:/Program Files/OpenSCAD/openscad"
 
 # do not edit below unless you know what you are doing!
 import os
+import platform
 from shutil import copy, rmtree
 import shlex
 import random as rd
 import time
 import numpy as np
 import math
+import re
 from PIL import Image
 import subprocess as sp
 
 halt = -1  # debug: terminate skipping this shell (0 to n to enable)
-curdir = str.replace(os.getcwd(), "\\", "/")
 
-openscad_com = '"' + openscad_exe + '/openscad"'
+USE_SCAD_THREAD_TRAVERSAL = False
+STL_DIR = "stl_files"
+PREV_DIR = "prev"
 
 """try:
     import threading
@@ -32,18 +38,36 @@ if pythreads==1:
         pythreads=1"""
 
 
+def openscad():
+    try:
+        if OPENSCAD_PATH:
+            return OPENSCAD_PATH
+    except NameError:
+        pass
+    if os.getenv("OPENSCAD_PATH"):
+        return os.getenv("OPENSCAD_PATH")
+    if platform.system() == "Darwin":
+        return "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD"
+    if platform.system() == "Windows":
+        # Note: Windows allows forward slashes now
+        return '"C:/Program Files/OpenSCAD/openscad"'
+    # Default to linux-friendly CLI program name
+    return "openscad"
+
+
 def prepwd():
-    if os.path.exists(openscad_exe) == False:
-        input("ERROR: openscad path not found.")
-        exit()
-    if os.path.exists("stl's") == False:
-        os.mkdir("stl's", 777)
-    else:
-        rmtree("stl's")
-    if os.path.exists("prev") == False:
-        os.mkdir("prev", 777)
-    else:
-        rmtree("prev")
+    # Linux and other systems that use PATH variables don't need an absolute path configured.
+    # if os.path.exists(openscad_exe) == False:
+    #     input("ERROR: openscad path not found.")
+    #     exit()
+
+    if os.path.exists(STL_DIR):
+        rmtree(STL_DIR)
+    os.mkdir(STL_DIR, 777)
+
+    if os.path.exists(PREV_DIR):
+        rmtree(PREV_DIR)
+    os.mkdir(PREV_DIR, 777)
 
     """if pythreads>0:
         if(os.path.exists(curdir+"/threads")==False):
@@ -60,66 +84,53 @@ def prepwd():
                 copy("make_shells.scad",curdir+"/threads/"+str(d)+"/")"""
 
 
-prepwd()
-# get scad version:
-scadthreading = False
-ver = sp.check_output(shlex.split(openscad_com + " --version"), shell=True)
-ver = str(ver).replace("b'OpenSCAD version ", "").replace("\\r\\n'", "").split(".")
-if int(ver[0]) >= 2015:
-    if int(ver[0]) >= 2018 and int(ver[1]) >= 5 and int(ver[2]) >= 30:
-        scadthreading = input("multi-threading available. use it(y/n)?") == "y"
-    else:
-        scadthreading = False
-else:
-    input("ERROR: invalid scad version. must be at least 2015.xx.xx .")
-    exit()
+# def pythread1():
+#     if USE_SCAD_THREAD_TRAVERSAL:
+#         sp.run(shlex.split(openscad_com+" --enable=thread-traversal -o \""+curdir+"/stl\'s/"+str(shell+1)+".stl\" \""+curdir+"/make_shells.scad\""),shell=True)
+#     else:
+#         target=sp.run(shlex.split(openscad_com+" -o \""+curdir+"/stl\'s/"+str(shell+1)+".stl\" \""+curdir+"/threads/"+str(threadid)+"/make_shells.scad\""),shell=True)
 
-d2 = 0
-shell = 0
-"""def pythread1():
-    if scadthreading:
-        sp.run(shlex.split(openscad_com+" --enable=thread-traversal -o \""+curdir+"/stl\'s/"+str(shell+1)+".stl\" \""+curdir+"/make_shells.scad\""),shell=True)
-    else:
-        target=sp.run(shlex.split(openscad_com+" -o \""+curdir+"/stl\'s/"+str(shell+1)+".stl\" \""+curdir+"/threads/"+str(threadid)+"/make_shells.scad\""),shell=True)
-    """
+
+def has_scad_threading():
+    cmd = [openscad(), "--help"]
+    # Note: help comes on stderr
+    out = sp.check_output(cmd, stderr=sp.STDOUT, universal_newlines=True)
+    m = re.search(r"enable experimental features:\s(.+?)\n\s*\n", out, flags=re.DOTALL)
+    if m:
+        return "thread-traversal" in re.split(r"\s*\|\s*", m[1])
+    return False
+
+
+def scad_version():
+    cmd = [openscad(), "--version"]
+    # Note: version comes on stderr
+    out = sp.check_output(cmd, stderr=sp.STDOUT, universal_newlines=True)
+    m = re.search(r"enable experimental features:\s(.+?)\n\s*\n", out, flags=re.DOTALL)
+    m = re.match(r"^\s*OpenSCAD version (\d{4})\.(\d\d)\.(\d\d)\s*$", out)
+    return (int(m[1]), int(m[2]), int(m[3])) if m else ()
 
 
 def execscad(threadid=0):
     print("Executing OpenSCAD script...")
-    # if pythreads<=1:
-    if scadthreading:
-        sp.run(
-            shlex.split(
-                openscad_com
-                + ' --enable=thread-traversal -o "'
-                + curdir
-                + "/stl's/"
-                + str(shell + 1)
-                + '.stl" "'
-                + curdir
-                + '/make_shells.scad"'
-            )
-        )
-    else:
-        sp.run(
-            shlex.split(
-                openscad_com
-                + ' -o "'
-                + curdir
-                + "/stl's/"
-                + str(shell + 1)
-                + '.stl" "'
-                + curdir
-                + '/make_shells.scad"'
-            )
-        )
-        """return None
-    else:
-        copy(curdir+"/maze.scad",curdir+"/threads/"+str(threadid)+"/")
-        copy(curdir+"/config.scad",curdir+"/threads/"+str(threadid)+"/")
-        ret=threading.Thread(target=pythread1)
-        ret.daemon=True
-        return ret"""
+    cmd = [openscad()]
+    if USE_SCAD_THREAD_TRAVERSAL:
+        cmd.append("--enable=thread-traversal")
+    cmd.extend(
+        [
+            "-o",
+            os.path.join(os.getcwd(), STL_DIR, str(shell + 1) + ".stl"),
+            os.path.join(os.getcwd(), "make_shells.scad"),
+        ]
+    )
+    print(cmd)
+
+    #     return None
+    # else:
+    #     copy(curdir+"/maze.scad",curdir+"/threads/"+str(threadid)+"/")
+    #     copy(curdir+"/config.scad",curdir+"/threads/"+str(threadid)+"/")
+    #     ret=threading.Thread(target=pythread1)
+    #     ret.daemon=True
+    #     return ret
 
 
 def udnbers(n, vi, nc, mw, mh, stag):
@@ -221,9 +232,9 @@ def genmaze(mw, mh, stag, st, ex):
                     if walls[x, y, idx] == 0:
                         im.putpixel((imnx[idx], imny[idx]), 255)
         if tpp == 2:
-            im.save(curdir + "/prev/" + str(shell + 1) + "a.png")
+            im.save(os.path.join(os.getcwd(), PREV_DIR, str(shell + 1) + "a.png"))
         else:
-            im.save(curdir + "/prev/" + str(shell + 1) + ".png")
+            im.save(os.path.join(os.getcwd(), PREV_DIR, str(shell + 1) + ".png"))
     return walls
 
 
@@ -427,26 +438,49 @@ def gen():
         return True
 
 
-# make parts:
-p = abs(int(input("nub count (0=2 nubs,1=3 nubs,2=4 nubs, ...):"))) + 2
-tpp = 0
-hbias = abs(int(input("difficulty (hbias); 0=none >0= bias; larger= more difficult:")))
-stagconst = 0
-stagmode = int(input("shift mode (0=none 1=random 2=random change 3=twist):"))
-if stagmode == 3:
-    stagconst = abs(int(input("twist amount:")))
-opt = open("opt.txt", "r")
-shells = int(opt.readline()) + 1  # levels
-marge = float(opt.readline())
-i = int(opt.readline())
-tp = int(opt.readline())
-if tp >= shells:
-    tp = 0
-us = float(opt.readline())
-mh = int(opt.readline())
-mw = int(opt.readline())
-mwt = float(opt.readline())
-opt.close()
-while not gen():
-    continue
-print("done!")
+if __name__ == "__main__":
+
+    try:
+        prepwd()
+        # get scad version:
+        if has_scad_threading():
+            USE_SCAD_THREAD_TRAVERSAL = (
+                input("multi-threading available. use it(y/n)?").lower() == "y"
+            )
+
+        version = scad_version()
+        if version[0] < 2015:
+            input("ERROR: invalid scad version. must be at least 2015.xx.xx .")
+            exit(1)
+    except FileNotFoundError:
+        input("ERROR: Could not find OpenSCAD: " + openscad())
+        exit(1)
+
+    d2 = 0
+    shell = 0
+
+    # make parts:
+    p = abs(int(input("nub count (0=2 nubs,1=3 nubs,2=4 nubs, ...):"))) + 2
+    tpp = 0
+    hbias = abs(
+        int(input("difficulty (hbias); 0=none >0= bias; larger= more difficult:"))
+    )
+    stagconst = 0
+    stagmode = int(input("shift mode (0=none 1=random 2=random change 3=twist):"))
+    if stagmode == 3:
+        stagconst = abs(int(input("twist amount:")))
+    opt = open("opt.txt", "r")
+    shells = int(opt.readline()) + 1  # levels
+    marge = float(opt.readline())
+    i = int(opt.readline())
+    tp = int(opt.readline())
+    if tp >= shells:
+        tp = 0
+    us = float(opt.readline())
+    mh = int(opt.readline())
+    mw = int(opt.readline())
+    mwt = float(opt.readline())
+    opt.close()
+    while not gen():
+        continue
+    print("done!")
