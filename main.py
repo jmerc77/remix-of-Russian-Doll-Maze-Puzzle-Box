@@ -477,7 +477,7 @@ if __name__ == "__main__":
 
     shells = config.getint("levels") + 1  # levels
     marge = config.getfloat("tolerance")
-    i = config.getbool("maze_inside")
+    i = int(config.getboolean("maze_inside"))
     tp = config.getint("transition_shell")
     if tp >= shells:
         tp = 0
