@@ -1,5 +1,7 @@
 # Russian Doll Maze Puzzle Box Generator
 
+Generator for [Thingiverse Thing 2980535](https://www.thingiverse.com/thing:2980535)
+
 ### system requirements
 
 - OS
