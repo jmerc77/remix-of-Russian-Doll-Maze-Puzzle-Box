@@ -14,10 +14,9 @@ lefty=0;//left-handed thread enabler
 //Works so far.
 include <config.scad>
 include <maze.scad>
-eh2=1;// Extra height
-
 
 //computed 
+eh2=1;// Extra height
 nubscale=1.5;
 bh=s-eh2;	// Base height
 eh=(tpp<1&&i==0)?0:bh;// Extra height	
