@@ -5,7 +5,7 @@ Generator for [Thingiverse Thing 2980535](https://www.thingiverse.com/thing:2980
 ### system requirements
 
 - OS
-  - Windows 7 (64 bit) or greater
+  - Windows 7 or greater
   - MacOS (tested with python3 installed via homebrew)
   - Linux may work but untested
 - `python 3.5` or greater with:
@@ -36,13 +36,15 @@ make sure to install the python libs!
 
 - read `opt.ini`, it has important info about the options.
 - put all these files in a project folder.
-- If using Windows, use the [multi-thread openscad version](http://files.openscad.org/snapshots/OpenSCAD-2018.05.30-x86-64_multithread-Installer.exe).
+- If using Windows, use the multi-thread openscad version
+  [32 bit](http://files.openscad.org/snapshots/OpenSCAD-2018.05.30-x86-32_multithread-Installer.exe)
+  [64 bit](http://files.openscad.org/snapshots/OpenSCAD-2018.05.30-x86-64_multithread-Installer.exe).
 - preview the mazes in the `prev` folder. if using transition point, the one ending with "a" is of the same shell as without the "a".
 
 ### Notes
 
 - be patient: it may take a while to run the openscad scripts.
-- `m=0.3` (`tolerance` in `opt.ini`)g for 0.4mm nozzle worked well for me with ABS. PLA or PETG recomended as some shells can be large, nubs rub off easier with "soft" materials, and cheating can be possible with "flexible" materials.
+- `m=0.3` (`tolerance` in `opt.ini`) for 0.4mm nozzle worked well for me with ABS. PLA or PETG recomended as some shells can be large, nubs rub off easier with "soft" materials, and cheating can be possible with "flexible" materials.
 - editing during the run may not be possible.
 - openscad scripts run via shell in the python code. this speeds the process of stl export as this limits having to switch between apps.
 - to make another or to adjust values, you will need to restart from step 2 as some parts may no longer fit.
