@@ -283,7 +283,7 @@ def gen():
 
         # stag/shift
         stag = np.zeros(mh)
-        if stagmode == 1 or stagmode == 2:
+        if stagmode in (1, 2):
             for y in range(0, mh):
                 if y == 0 or stagmode == 1:
                     stag[y] = rd.randint(0, mh - 1)
@@ -443,9 +443,9 @@ if __name__ == "__main__":
     if tp >= shells:
         tp = 0
     us = config.getfloat("spacing")
-    mh = config.getint("units_tall")  # int(opt.readline())
-    mw = config.getint("units_wide")  # int(opt.readline())
-    mwt = config.getfloat("wall_thickness")  # float(opt.readline())
+    mh = config.getint("units_tall")
+    mw = config.getint("units_wide")
+    mwt = config.getfloat("wall_thickness")
     while not gen():
         continue
     print("done!")
