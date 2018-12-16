@@ -246,7 +246,7 @@ def gen():
     global mw
     global i
     global tpp
-    threadlist = []
+    # threadlist = []
     if shell < shells:
         if shell == halt:
             exit()
@@ -363,7 +363,7 @@ def gen():
             )
         if shell < shells - 2:
             d2 = d
-        time.sleep(2)
+        # time.sleep(2)
 
         if shell > 0 and shell < shells and shell == tp and tpp < 1:
             if i == 0:  # double nub transition
