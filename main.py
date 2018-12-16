@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-# If you keep OpenSCAD in an unusual location, uncomment the following line of code and
+# OPENSCAD_PATH = "C:/Program Files/OpenSCAD/openscad"
+# If you keep OpenSCAD in an unusual location, uncomment the above line of code and
 # set it to the full path to the openscad executable.
 # Note: Windows/python now support forward-slash characters in paths, so please use
 #       those instead of backslashes which create a lot of confusion in code strings.
-# OPENSCAD_PATH = "C:/Program Files/OpenSCAD/openscad"
+
 
 # do not edit below unless you know what you are doing!
 import os
@@ -62,21 +63,18 @@ def prepwd():
 
 def has_scad_threading():
     cmd = [openscad(), "--help"]
-    # Note: help comes on stderr
-    out = sp.check_output(cmd, stderr=sp.STDOUT, universal_newlines=True)
-    m = re.search(r"enable experimental features:\s(.+?)\n\s*\n", out, flags=re.DOTALL)
-    if m:
-        return "thread-traversal" in re.split(r"\s*\|\s*", m[1])
+    out = str(sp.check_output(cmd)).lower()
+    if "--parallelism" in out:
+        return True
     return False
 
 
 def scad_version():
     cmd = [openscad(), "--version"]
-    # Note: version comes on stderr
-    out = sp.check_output(cmd, stderr=sp.STDOUT, universal_newlines=True)
-    m = re.search(r"enable experimental features:\s(.+?)\n\s*\n", out, flags=re.DOTALL)
-    m = re.match(r"^\s*OpenSCAD version (\d{4})\.(\d\d)\.(\d\d)\s*$", out)
-    return (int(m[1]), int(m[2]), int(m[3])) if m else ()
+    ver=sp.check_output(cmd,shell=True)
+    ver=str(ver).replace("\\r","").replace("b'OpenSCAD version ","").replace("\\n'","").split(".")	
+    
+    return (int(ver[0]), int(ver[1]), int(ver[2])) if ver else ()
 
 
 def execscad(threadid=0):
@@ -91,7 +89,6 @@ def execscad(threadid=0):
             os.path.join(os.getcwd(), "make_shells.scad"),
         ]
     )
-    print(cmd)
     sp.run(cmd)
     
 def udnbers(n, vi, nc, mw, mh, stag):
