@@ -22,6 +22,9 @@ import subprocess as sp
 
 halt = -1  # debug: terminate skipping this shell (0 to n to enable)
 
+# Make sure we have a fresh random seed
+rd.seed()
+
 USE_SCAD_THREAD_TRAVERSAL = False
 STL_DIR = "stl_files"
 PREV_DIR = "prev"
@@ -165,7 +168,6 @@ def genmaze(mw, mh, stag, st, ex):
     nbercount = np.zeros(mw * mh)
     nbers = np.ones(mw * mh * 4)
     walls = np.ones(mw * mh * 4)
-    rd.seed(int(round(time.time() * 1000)))
     r = int((mw * mh) / 2)
     vcount = 1
     visited[r] = 1
@@ -177,7 +179,6 @@ def genmaze(mw, mh, stag, st, ex):
     udnbers(nbers, visited, nbercount, mw, mh, stag)
     while vcount < (mw * mh):
         v = np.transpose(np.nonzero(np.logical_and(visited == 1, nbercount > 0)))
-        rd.seed(int(round(time.time() * 1000)))
         # choose branch
         r = rd.randint(0, len(v) - 1)
         c = v[r]
@@ -295,7 +296,6 @@ def gen():
         elif stagmode == 3:
             stag = np.multiply(np.arange(0, mh), stagconst).astype("int")
         # maze
-        rd.seed(int(round(time.time() * 1000)))
         st = rd.randint(0, mw - 1)
         ex = rd.randint(0, mw - 1)
         marr = genmaze(int(mw), int(mh), stag, st, ex)
@@ -317,7 +317,6 @@ def gen():
                     else:
                         s = s + "0,"
                 s = s[0:-1] + "],"
-            rd.seed(int(round(time.time() * 1000)))
             maze.write(
                 s[0:-1]
                 + "];\nh1="
@@ -350,7 +349,6 @@ def gen():
                     else:
                         s = s + "0,"
                 s = s[0:-1] + "],"
-            rd.seed(int(round(time.time() * 1000)))
             maze.write(
                 s[0:-1]
                 + "];\nh2="
