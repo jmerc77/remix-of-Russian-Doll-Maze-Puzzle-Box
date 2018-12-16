@@ -40,7 +40,7 @@ make sure to install the python libs!
 ### Notes
 
 - be patient: it may take a while to run the openscad scripts.
-- `m=0.3` for 0.4mm nozzle worked well for me with ABS. PLA or PETG recomended as some shells can be large, nubs rub off easier with "soft" materials, and cheating can be possible with "flexible" materials.
+- `m=0.3` (`tolerance` in `opt.ini`)g for 0.4mm nozzle worked well for me with ABS. PLA or PETG recomended as some shells can be large, nubs rub off easier with "soft" materials, and cheating can be possible with "flexible" materials.
 - editing during the run may not be possible.
 - openscad scripts run via shell in the python code. this speeds the process of stl export as this limits having to switch between apps.
 - to make another or to adjust values, you will need to restart from step 2 as some parts may no longer fit.
