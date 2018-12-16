@@ -29,19 +29,6 @@ USE_SCAD_THREAD_TRAVERSAL = False
 STL_DIR = "stl_files"
 PREV_DIR = "prev"
 
-"""try:
-    import threading
-    pythreads=1
-except:
-    pythreads=0
-    print("python threading unavailable!")
-    
-if pythreads==1:
-    pythreads=int(input("python threads (how many shells to do at a time): "))
-    if pythreads<1:
-        pythreads=1"""
-
-
 def openscad():
     try:
         if OPENSCAD_PATH:
@@ -72,28 +59,6 @@ def prepwd():
     if os.path.exists(PREV_DIR):
         rmtree(PREV_DIR)
     os.mkdir(PREV_DIR)  # Default perms: world-writable
-
-    """if pythreads>0:
-        if(os.path.exists(curdir+"/threads")==False):
-            os.mkdir("threads",777)
-            for d in range(pythreads):
-                if(os.path.exists(curdir+"/threads/"+str(d))==False):
-                    os.mkdir("threads/"+str(d),777)
-                copy(curdir+"/make_shells.scad",curdir+"/threads/"+str(d)+"/")
-        else:
-            rmtree("threads")
-            for d in range(pythreads):
-                if(os.path.exists(curdir+"/threads/"+str(d))==False):
-                    os.mkdir("threads/"+str(d),777)
-                copy("make_shells.scad",curdir+"/threads/"+str(d)+"/")"""
-
-
-# def pythread1():
-#     if USE_SCAD_THREAD_TRAVERSAL:
-#         sp.run(shlex.split(openscad_com+" --enable=thread-traversal -o \""+curdir+"/stl\'s/"+str(shell+1)+".stl\" \""+curdir+"/make_shells.scad\""),shell=True)
-#     else:
-#         target=sp.run(shlex.split(openscad_com+" -o \""+curdir+"/stl\'s/"+str(shell+1)+".stl\" \""+curdir+"/threads/"+str(threadid)+"/make_shells.scad\""),shell=True)
-
 
 def has_scad_threading():
     cmd = [openscad(), "--help"]
@@ -128,20 +93,12 @@ def execscad(threadid=0):
     )
     print(cmd)
     sp.run(cmd)
-    # else:
-    #     copy(curdir+"/maze.scad",curdir+"/threads/"+str(threadid)+"/")
-    #     copy(curdir+"/config.scad",curdir+"/threads/"+str(threadid)+"/")
-    #     ret=threading.Thread(target=pythread1)
-    #     ret.daemon=True
-    #     return ret
-
-
+    
 def udnbers(n, vi, nc, mw, mh, stag):
     for y in range(0, mh):
         for x in range(0, mw):
             x3 = int((x + stag[y]) % mw)
             x2 = [x - 1, x + 1, x, x]
-            # unused: x4 = [x3 - 1, x3 + 1, x3, x3]
             y2 = [y, y, y - 1, y + 1]
             for i in range(0, 4):
                 if stag[y] % mw > 0:
@@ -175,7 +132,6 @@ def genmaze(mw, mh, stag, st, ex):
     nbers = nbers.reshape([mw, mh, 4])
     nbercount = nbercount.reshape([mw, mh])
     walls = walls.reshape([mw, mh, 4])
-    # pos=np.argwhere(visited)[0]
     udnbers(nbers, visited, nbercount, mw, mh, stag)
     while vcount < (mw * mh):
         v = np.transpose(np.nonzero(np.logical_and(visited == 1, nbercount > 0)))
@@ -217,7 +173,7 @@ def genmaze(mw, mh, stag, st, ex):
         walls[c2[0], c2[1], n2] = 0
         udnbers(nbers, visited, nbercount, mw, mh, stag)
         vcount = vcount + 1
-    # prev
+    # preview
     if ((i == 0 and shell < shells - 1) or (i == 1 and shell > 0)) and tpp != 1:
         im.putpixel((1 + ex * 2, 0), 255)
         im.putpixel((1 + st * 2, mh * 2), 255)
@@ -246,7 +202,6 @@ def gen():
     global mw
     global i
     global tpp
-    # threadlist = []
     if shell < shells:
         if shell == halt:
             exit()
@@ -258,8 +213,6 @@ def gen():
         if tpp < 1:
             if shell == 0:
                 d = (mw * us * p) / np.pi + wt - marge * 2
-                """else:
-                    d=(mw*us)/np.pi"""
             else:
                 if shell == tp:
                     d = d2
@@ -279,7 +232,6 @@ def gen():
             d = d2 + us + wt + marge * 2
             mw = int(math.ceil((d / p + us) * np.pi / 2 / us))
             mh += 1
-        # print(d)
 
         # stag/shift
         stag = np.zeros(mh)
@@ -363,7 +315,6 @@ def gen():
             )
         if shell < shells - 2:
             d2 = d
-        # time.sleep(2)
 
         if shell > 0 and shell < shells and shell == tp and tpp < 1:
             if i == 0:  # double nub transition
@@ -375,21 +326,6 @@ def gen():
         else:
             tpp = 0
         if tpp < 1:
-            """if pythreads>0:
-                threadlist.append(execscad(shell%pythreads))
-                if shell%pythreads==pythreads-1:
-                    print("starting the "+str(pythreads)+" threads...")
-                    for t in threadlist:
-                        t.start()
-                    print("waiting on threads...")
-                    for t in threadlist:
-                        t.join()
-                    time.sleep(2)
-                    rmfiles(curdir+"/threads")
-                    for d in range(pythreads):
-                        copy(curdir+"/make_shells.scad",curdir+"/threads/"+str(d)+"/")
-                    threadlist=[]
-            else:"""
             execscad()
             shell = shell + 1
         return False
