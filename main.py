@@ -281,10 +281,6 @@ def gen():
             mh += 1
         # print(d)
 
-        if tpp < 1:
-            maze = open("maze.scad", "w")
-        else:
-            maze = open("maze.scad", "a+")
         # stag/shift
         stag = np.zeros(mh)
         if stagmode == 1 or stagmode == 2:
@@ -299,69 +295,44 @@ def gen():
         st = rd.randint(0, mw - 1)
         ex = rd.randint(0, mw - 1)
         marr = genmaze(int(mw), int(mh), stag, st, ex)
+        matrix = []
+        for y in range(0, mh):
+            row = []
+            for x in range(0, mw * p):
+                x2 = x % mw
+                r = marr[x2, y, 1] == 0
+                u = marr[x2, y, 3] == 0
+                if u and r:
+                    row.append("3")
+                elif u:
+                    row.append("2")
+                elif r:
+                    row.append("1")
+                else:
+                    row.append("0")
+            matrix.append(f"[{','.join(row)}]")
+        s = f"[{','.join(matrix)}];"
+
         if tpp < 1:
-            maze.write("maze1=")
-            s = "["
-            for y in range(0, mh):
-                s = s + "["
-                for x in range(0, mw * p):
-                    x2 = x % mw
-                    r = marr[x2, y, 1] == 0
-                    u = marr[x2, y, 3] == 0
-                    if u and r:
-                        s = s + "3,"
-                    elif u:
-                        s = s + "2,"
-                    elif r:
-                        s = s + "1,"
-                    else:
-                        s = s + "0,"
-                s = s[0:-1] + "],"
-            maze.write(
-                s[0:-1]
-                + "];\nh1="
-                + str(mh)
-                + ";\nw1="
-                + str(mw * p)
-                + ";\nst1="
-                + str(st)
-                + ";\nex1="
-                + str(ex)
-                + ";\n"
-            )
-            # maze.write("maze2=[];\n")
-            # maze.write("h2=0;\nw2=0;\nst2=0;\nex2=0;")
+            maze_num = 1
+            open_mode = "w"
         else:
-            maze.write("maze2=")
-            s = "["
-            for y in range(0, mh):
-                s = s + "["
-                for x in range(0, mw * p):
-                    x2 = x % mw
-                    r = marr[x2, y, 1] == 0
-                    u = marr[x2, y, 3] == 0
-                    if u and r:
-                        s = s + "3,"
-                    elif u:
-                        s = s + "2,"
-                    elif r:
-                        s = s + "1,"
-                    else:
-                        s = s + "0,"
-                s = s[0:-1] + "],"
+            maze_num = 2
+            open_mode = "a+"
+        with open("maze.scad", open_mode) as maze:
+            maze.write(f"maze{maze_num}=")
             maze.write(
-                s[0:-1]
-                + "];\nh2="
-                + str(mh)
-                + ";\nw2="
-                + str(mw * p)
-                + ";\nst2="
-                + str(st)
-                + ";\nex2="
-                + str(ex)
-                + ";"
+                "\n".join(
+                    [
+                        s,
+                        f"h{maze_num}={mh};",
+                        f"w{maze_num}={mw * p};",
+                        f"st{maze_num}={st};",
+                        f"ex{maze_num}={ex};",
+                    ]
+                )
             )
-        maze.close()
+
         base = 1
         lid = 0
         if shell == shells - 1:
@@ -371,35 +342,25 @@ def gen():
             mos = 0
         else:
             mos = shells - shell - 2
-        cfg = open("config.scad", "w+")
-        cfg.write(
-            "p="
-            + str(p)
-            + ";\ntpp="
-            + str(tpp)
-            + ";\nis="
-            + str(shell)
-            + ";\nos="
-            + str(mos)
-            + ";\nlid="
-            + str(lid)
-            + ";\nbase="
-            + str(base)
-            + ";\niw="
-            + str(wt)
-            + ";\nid="
-            + str(d)
-            + ";\ns="
-            + str(us)
-            + ";\ni="
-            + str(i)
-            + ";\nbd="
-            + str(d + wt * 2 + us * 2)
-            + ";\nm="
-            + str(marge)
-            + ";"
-        )
-        cfg.close()
+        with open("config.scad", "w+") as cfg:
+            cfg.write(
+                "\n".join(
+                    [
+                        f"p={p};",
+                        f"tpp={tpp};",
+                        f"is={shell};",
+                        f"os={mos};",
+                        f"lid={lid};",
+                        f"base={base};",
+                        f"iw={wt};",
+                        f"id={d};",
+                        f"s={us};",
+                        f"i={i};",
+                        f"bd={d + wt * 2 + us * 2};",
+                        f"m={marge};",
+                    ]
+                )
+            )
         if shell < shells - 2:
             d2 = d
         time.sleep(2)
