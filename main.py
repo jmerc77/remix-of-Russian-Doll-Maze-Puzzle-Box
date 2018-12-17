@@ -28,7 +28,7 @@ rd.seed()
 
 USE_SCAD_THREAD_TRAVERSAL = False
 STL_DIR = "stl_files"
-PREV_DIR = "prev"
+PREV_DIR = "maze_previews"
 
 def openscad():
     try:
@@ -116,13 +116,13 @@ def udnbers(n, vi, nc, mw, mh, stag):
             nc[x, y] = len(np.argwhere(n[x, y].astype("int")))
 
 
-def genmaze(mw, mh, stag, st, ex):
+def genmaze(mw, mh, stag):
     im = Image.new("L", [2 * mw + 1, 2 * mh + 1], 0)
     visited = np.zeros(mw * mh)
     nbercount = np.zeros(mw * mh)
     nbers = np.ones(mw * mh * 4)
     walls = np.ones(mw * mh * 4)
-    r = int((mw * mh) / 2)
+    r = rd.randint(0, mw*mh-1)
     vcount = 1
     visited[r] = 1
     visited = visited.reshape([mw, mh])
@@ -136,13 +136,17 @@ def genmaze(mw, mh, stag, st, ex):
         r = rd.randint(0, len(v) - 1)
         c = v[r]
         # choose wall to break
-        if nbers[c[0], c[1]][0] == 1 or nbers[c[0], c[1]][1] == 1:
-            # horizontal bias when possible
+        if nbers[c[0], c[1]][0] == 1 or nbers[c[0], c[1]][1] == 1 or nbers[c[0], c[1]][3] == 1:
+            # horizontal-down bias when possible
             r = rd.randint(0, nbercount[c[0], c[1]] - 1 + hbias)
             if r > nbercount[c[0], c[1]] - 1:
                 r = int(r - (nbercount[c[0], c[1]]))
-                if nbers[c[0], c[1]][0] == 1 and nbers[c[0], c[1]][1] == 1:
-                    r = int(r % 2)
+                #anything but up
+                nonup=nbercount[c[0], c[1]]
+                if nbers[c[0], c[1]][2] == 1:
+                    nonup-=1
+                if nonup>1:
+                    r = int(r % nonup)
                 else:
                     r = 0
         else:
@@ -170,7 +174,7 @@ def genmaze(mw, mh, stag, st, ex):
         walls[c2[0], c2[1], n2] = 0
         udnbers(nbers, visited, nbercount, mw, mh, stag)
         vcount = vcount + 1
-    # preview
+    #preview
     if ((i == 0 and shell < shells - 1) or (i == 1 and shell > 0)) and tpp != 1:
         im.putpixel((1 + ex * 2, 0), 255)
         im.putpixel((1 + st * 2, mh * 2), 255)
@@ -189,9 +193,48 @@ def genmaze(mw, mh, stag, st, ex):
             im.save(os.path.join(os.getcwd(), PREV_DIR, str(shell + 1) + "a.png"))
         else:
             im.save(os.path.join(os.getcwd(), PREV_DIR, str(shell + 1) + ".png"))
-    return walls
+    return walls#lrud
+def solver(maze,s,e):
+    branches=[[s,mh-1,0]]#x,x,length
+    length=0
+    solved=False
+    while len(branches)>0:
+        temp=[]
+        for branch in range(len(branches)):
+            x=branches[branch][0]
+            y=branches[branch][1]
+            length=branches[branch][2]
+            here=maze[x,y]
+            opencnt=4-np.sum(here)
+            if x==e and y==0:
+                return -length
+            if opencnt>1:
+                if here[0]==0:
+                    temp.append([(x+mw-1)%mw,y,length+1])
+                if here[1]==0:
+                    temp.append([(x+1)%mw,y,length+1])
+                if here[2]==0:
+                    temp.append([x,y-1,length+1])
+                if here[3]==0:
+                    temp.append([x,y+1,length+1])
+        branches=temp
+    return None
 
-
+def choose_path(maze):
+    global st
+    global ex
+    #difficulty
+    #get path lengths...
+    lengths=np.zeros(mw*mw)#[st,ex]
+    for s in range(mw):
+        for e in range(mw):
+            #find way out...
+            lengths[s*mw+e]=solver(maze,s,e)
+    sortedlengthidxs=np.argsort(np.asarray(lengths))
+    chosen=sortedlengthidxs[int(difficulty*len(sortedlengthidxs)/101)]
+    st=chosen//mw
+    ex=chosen%mw
+    
 def gen():
     global shell
     global d2
@@ -241,9 +284,11 @@ def gen():
         elif stagmode == 3:
             stag = np.multiply(np.arange(0, mh), stagconst).astype("int")
         # maze
-        st = rd.randint(0, mw - 1)
-        ex = rd.randint(0, mw - 1)
-        marr = genmaze(int(mw), int(mh), stag, st, ex)
+        
+        #st = rd.randint(0, mw - 1)
+        #ex = rd.randint(0, mw - 1)
+        marr = genmaze(int(mw), int(mh), stag)
+        choose_path(marr)
         matrix = []
         for y in range(0, mh):
             row = []
@@ -323,7 +368,7 @@ def gen():
         else:
             tpp = 0
         if tpp < 1:
-            execscad()
+            #execscad()
             shell = shell + 1
         return False
     else:
@@ -355,13 +400,15 @@ if __name__ == "__main__":
     p = abs(int(input("nub count (0=2 nubs,1=3 nubs,2=4 nubs, ...):"))) + 2
     tpp = 0
     hbias = abs(
-        int(input("difficulty (hbias); 0=none >0= bias; larger= more difficult:"))
+        int(input("complexity (horizontal-down bias); 0=none >0= bias; larger= more difficult:"))*100
     )
+    difficulty=abs(float(input("difficulty (length of path); 0.0 (easy) to 100.0 (hard): ")))
+    if difficulty>100:
+        difficulty=100
     stagconst = 0
     stagmode = int(input("shift mode (0=none 1=random 2=random change 3=twist):"))
     if stagmode == 3:
         stagconst = abs(int(input("twist amount:")))
-
     config = configparser.ConfigParser()
     config.read("opt.ini")
     if "DEFAULT" not in config:
