@@ -368,7 +368,7 @@ def gen():
         else:
             tpp = 0
         if tpp < 1:
-            #execscad()
+            execscad()
             shell = shell + 1
         return False
     else:
