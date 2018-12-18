@@ -41,7 +41,7 @@ def openscad():
         return "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD"
     if platform.system() == "Windows":
         # Note: Windows allows forward slashes now
-        return '"C:/Program Files/OpenSCAD/openscad"'
+        return "C:/Program Files/OpenSCAD/openscad"
     # Default to linux-friendly CLI program name
     return "openscad"
 
