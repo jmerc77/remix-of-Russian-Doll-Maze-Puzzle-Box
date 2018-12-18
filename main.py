@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-OPENSCAD_PATH = "P:/Program Files/OpenSCAD/openscad"
+#OPENSCAD_PATH = "C:/Program Files/OpenSCAD/openscad"
 # If you keep OpenSCAD in an unusual location, uncomment the above line of code and
 # set it to the full path to the openscad executable.
 # Note: Windows/python now support forward-slash characters in paths, so please use
