@@ -37,7 +37,7 @@ Make sure to install the python libs!
 - Read `opt.ini`, it has important info about the options.
 - Put all these files in a project folder.
 - If using Windows, use the multi-thread openscad version: [32 bit](http://files.openscad.org/snapshots/OpenSCAD-2018.05.30-x86-32_multithread-Installer.exe) Or [64 bit](http://files.openscad.org/snapshots/OpenSCAD-2018.05.30-x86-64_multithread-Installer.exe).
-- Preview the mazes in the `prev` folder. If using transition point, the one ending with "a" is of the same shell as without the "a".
+- Preview the mazes in the `maze_previews` folder. If using transition point, the one ending with "a" is of the same shell as without the "a".
 
 ### Notes
 
