@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-#OPENSCAD_PATH = "C:/Program Files/OpenSCAD/openscad"
+#OPENSCAD_PATH = "C:/Program Files/OpenSCAD/openscad.com"
 # If you keep OpenSCAD in an unusual location, uncomment the above line of code and
 # set it to the full path to the openscad executable.
 # Note: Windows/python now support forward-slash characters in paths, so please use
@@ -41,7 +41,7 @@ def openscad():
         return "/Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD"
     if platform.system() == "Windows":
         # Note: Windows allows forward slashes now
-        return "C:/Program Files/OpenSCAD/openscad"
+        return "C:/Program Files/OpenSCAD/openscad.com"
     # Default to linux-friendly CLI program name
     return "openscad"
 
