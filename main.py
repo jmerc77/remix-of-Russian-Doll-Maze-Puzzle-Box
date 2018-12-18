@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 #OPENSCAD_PATH = "C:/Program Files/OpenSCAD/openscad.com"
 # If you keep OpenSCAD in an unusual location, uncomment the above line of code and
@@ -133,21 +133,6 @@ def genmaze(mw, mh, stag):
         r = rd.randint(0, len(v) - 1)
         c = v[r]
         # choose wall to break
-        '''if nbers[c[0], c[1]][0] == 1 or nbers[c[0], c[1]][1] == 1 or nbers[c[0], c[1]][3] == 1:
-            # horizontal-down bias when possible
-            r = rd.randint(0, nbercount[c[0], c[1]] - 1 + hbias)
-            if r > nbercount[c[0], c[1]] - 1:
-                r = int(r - (nbercount[c[0], c[1]]))
-                #anything but up
-                nonup=nbercount[c[0], c[1]]
-                if nbers[c[0], c[1]][2] == 1:
-                    nonup-=1
-                if nonup>1:
-                    r = int(r % nonup)
-                else:
-                    r = 0
-        else:
-            # otherwise just vertical'''
         r = rd.randint(0, nbercount[c[0], c[1]] - 1)
         n = np.argwhere(nbers[c[0], c[1]])[r]
         # break wall
@@ -172,6 +157,7 @@ def genmaze(mw, mh, stag):
         udnbers(nbers, visited, nbercount, mw, mh, stag)
         vcount = vcount + 1
     return walls#lrud
+
 def preview(maze):
     im = Image.new("L", [2 * mw + 1, 2 * mh + 1], 0)
     if ((i == 0 and shell < shells - 1) or (i == 1 and shell > 0)) and tpp != 1:
@@ -235,6 +221,7 @@ def choose_path(maze):
     st=chosen//mw
     ex=chosen%mw
     preview(maze)
+
 def gen():
     global shell
     global d2
@@ -387,10 +374,10 @@ if __name__ == "__main__":
 
         version = scad_version()
         if version[0] < 2015:
-            input("ERROR: invalid scad version. must be at least 2015.xx.xx .")
+            print("ERROR: invalid scad version. must be at least 2015.xx.xx .\n")
             exit(1)
     except FileNotFoundError:
-        input("ERROR: Could not find OpenSCAD: " + openscad())
+        print("ERROR: Could not find OpenSCAD: " + openscad()+"\n")
         exit(1)
 
     d2 = 0
@@ -412,7 +399,7 @@ if __name__ == "__main__":
     config = configparser.ConfigParser()
     config.read("opt.ini")
     if "DEFAULT" not in config:
-        input("ERROR: No DEFAULT section in opt.ini")
+        print("ERROR: No DEFAULT section in opt.ini\n")
         exit(1)
     config = config["DEFAULT"]
 
