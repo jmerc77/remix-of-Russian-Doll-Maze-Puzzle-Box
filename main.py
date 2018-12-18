@@ -235,8 +235,6 @@ def choose_path(maze):
     chosen=sortedlengthidxs[int(difficulty/101*len(sortedlengthidxs))]
     st=chosen//mw
     ex=chosen%mw
-    print(np.asarray(lengths).flatten())
-    print(np.asarray(lengths).flatten()[chosen])
     preview(maze)
 def gen():
     global shell
