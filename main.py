@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# OPENSCAD_PATH = "C:/Program Files/OpenSCAD/openscad"
+OPENSCAD_PATH = "P:/Program Files/OpenSCAD/openscad"
 # If you keep OpenSCAD in an unusual location, uncomment the above line of code and
 # set it to the full path to the openscad executable.
 # Note: Windows/python now support forward-slash characters in paths, so please use
@@ -20,7 +20,6 @@ import math
 import re
 from PIL import Image
 import subprocess as sp
-
 halt = -1  # debug: terminate skipping this shell (0 to n to enable)
 
 # Make sure we have a fresh random seed
@@ -117,7 +116,6 @@ def udnbers(n, vi, nc, mw, mh, stag):
 
 
 def genmaze(mw, mh, stag):
-    im = Image.new("L", [2 * mw + 1, 2 * mh + 1], 0)
     visited = np.zeros(mw * mh)
     nbercount = np.zeros(mw * mh)
     nbers = np.ones(mw * mh * 4)
@@ -136,7 +134,7 @@ def genmaze(mw, mh, stag):
         r = rd.randint(0, len(v) - 1)
         c = v[r]
         # choose wall to break
-        if nbers[c[0], c[1]][0] == 1 or nbers[c[0], c[1]][1] == 1 or nbers[c[0], c[1]][3] == 1:
+        '''if nbers[c[0], c[1]][0] == 1 or nbers[c[0], c[1]][1] == 1 or nbers[c[0], c[1]][3] == 1:
             # horizontal-down bias when possible
             r = rd.randint(0, nbercount[c[0], c[1]] - 1 + hbias)
             if r > nbercount[c[0], c[1]] - 1:
@@ -150,8 +148,8 @@ def genmaze(mw, mh, stag):
                 else:
                     r = 0
         else:
-            # otherwise just vertical
-            r = rd.randint(0, nbercount[c[0], c[1]] - 1)
+            # otherwise just vertical'''
+        r = rd.randint(0, nbercount[c[0], c[1]] - 1)
         n = np.argwhere(nbers[c[0], c[1]])[r]
         # break wall
         walls[c[0], c[1], n] = 0
@@ -174,7 +172,9 @@ def genmaze(mw, mh, stag):
         walls[c2[0], c2[1], n2] = 0
         udnbers(nbers, visited, nbercount, mw, mh, stag)
         vcount = vcount + 1
-    #preview
+    return walls#lrud
+def preview(maze):
+    im = Image.new("L", [2 * mw + 1, 2 * mh + 1], 0)
     if ((i == 0 and shell < shells - 1) or (i == 1 and shell > 0)) and tpp != 1:
         im.putpixel((1 + ex * 2, 0), 255)
         im.putpixel((1 + st * 2, mh * 2), 255)
@@ -184,57 +184,60 @@ def genmaze(mw, mh, stag):
                 imy = 1 + y * 2
                 imnx = [imx - 1, imx + 1, imx, imx]
                 imny = [imy, imy, imy - 1, imy + 1]
-                if visited[x, y] == 1:
-                    im.putpixel((imx, imy), 255)
+                im.putpixel((imx, imy), 255)
                 for idx in range(0, 4):
-                    if walls[x, y, idx] == 0:
+                    if maze[x, y, idx] == 0:
                         im.putpixel((imnx[idx], imny[idx]), 255)
         if tpp == 2:
             im.save(os.path.join(os.getcwd(), PREV_DIR, str(shell + 1) + "a.png"))
         else:
             im.save(os.path.join(os.getcwd(), PREV_DIR, str(shell + 1) + ".png"))
-    return walls#lrud
-def solver(maze,s,e):
-    branches=[[s,mh-1,0]]#x,x,length
-    length=0
+    
+def solver(maze,s):
+    branches=[[s,mh-1,0,0,4]]
     solved=False
-    while len(branches)>0:
+    ret=[]
+    while len(ret)<mw:
         temp=[]
-        for branch in range(len(branches)):
-            x=branches[branch][0]
-            y=branches[branch][1]
-            length=branches[branch][2]
+        for branch in branches:
+            x=branch[0]
+            y=branch[1]
+            length=branch[2]
+            downcnt=branch[3]
+            last=branch[4]
             here=maze[x,y]
             opencnt=4-np.sum(here)
-            if x==e and y==0:
-                return -length
-            if opencnt>1:
-                if here[0]==0:
-                    temp.append([(x+mw-1)%mw,y,length+1])
-                if here[1]==0:
-                    temp.append([(x+1)%mw,y,length+1])
-                if here[2]==0:
-                    temp.append([x,y-1,length+1])
-                if here[3]==0:
-                    temp.append([x,y+1,length+1])
-        branches=temp
-    return None
+            if y==0:
+                ret.append(length+downcnt/mh)
+            if opencnt>0:
+                if here[0]==0 and last!=0:
+                    temp.append([(x+mw-1)%mw,y,length+1,downcnt,1])
+                if here[1]==0 and last!=1:
+                    temp.append([(x+1)%mw,y,length+1,downcnt,0])
+                    
+                if here[2]==0 and last!=2:
+                    temp.append([x,y-1,length+1,downcnt,3])
+                if here[3]==0 and last!=3:
+                    temp.append([x,y+1,length+1,downcnt+1,2])
+        branches=temp.copy()
+    return ret
 
 def choose_path(maze):
     global st
     global ex
     #difficulty
     #get path lengths...
-    lengths=np.zeros(mw*mw)#[st,ex]
+    lengths=[]
     for s in range(mw):
-        for e in range(mw):
-            #find way out...
-            lengths[s*mw+e]=solver(maze,s,e)
-    sortedlengthidxs=np.argsort(np.asarray(lengths))
-    chosen=sortedlengthidxs[int(difficulty*len(sortedlengthidxs)/101)]
+        #find the ways out...
+        lengths.append(solver(maze,s))
+    sortedlengthidxs=np.argsort(np.asarray(lengths).flatten())
+    chosen=sortedlengthidxs[int(difficulty/101*len(sortedlengthidxs))]
     st=chosen//mw
     ex=chosen%mw
-    
+    print(np.asarray(lengths).flatten())
+    print(np.asarray(lengths).flatten()[chosen])
+    preview(maze)
 def gen():
     global shell
     global d2
@@ -399,9 +402,9 @@ if __name__ == "__main__":
     # make parts:
     p = abs(int(input("nub count (0=2 nubs,1=3 nubs,2=4 nubs, ...):"))) + 2
     tpp = 0
-    hbias = abs(
+    '''hbias = abs(
         int(input("complexity (horizontal-down bias); 0=none >0= bias; larger= more difficult:"))*100
-    )
+    )'''
     difficulty=abs(float(input("difficulty (length of path); 0.0 (easy) to 100.0 (hard): ")))
     if difficulty>100:
         difficulty=100
