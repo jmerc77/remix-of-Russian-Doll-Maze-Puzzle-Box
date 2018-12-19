@@ -27,7 +27,7 @@ Make sure to install the python libs!
    - You will be prompted whether to use multi-threadding (if available) then nub count, a difficulty level and a shift mode value.
    - Shifting is where each row of the maze is shifted and wrapped for the illusion of a bigger maze.
    - For shift mode 3, also input how much. It will be constrained by modulus, so large nums will not break it.
-   - Stl files go in the `stl_files` folder and previews in the `maze_previews` folder.
+   - Stl files go in the `*_stls` (the * is the name given in opt.ini when it was ran) folder and previews in the `maze_previews` folder.
 6. The stl files may need repair. Use a repair tool.
    - It is recomended to view all stl files to check that they will work.
 7. Print a 2-part test print at 0.2mm layers. If they fit, print the rest.
