@@ -24,7 +24,7 @@ Make sure to install the python libs!
 3. (optional) Adjust values in `opt.ini` as you see fit
 4. (optional) Make a backup of `opt.ini` so you can reuse these values in the future
 5. Open a python shell and run `main.py` (you may be able to just double click it)
-   - You will be prompted whether to use multi-threadding (if available) then nub count, a difficulty level and a shift mode value.
+   - You will be prompted whether to use multi-threadding (if available) then a difficulty level and a shift mode value.
    - Shifting is where each row of the maze is shifted and wrapped for the illusion of a bigger maze.
    - For shift mode 3, also input how much. It will be constrained by modulus, so large nums will not break it.
    - Stl files go in the `*_stls` (the * is the name given in opt.ini when it was ran) folder and previews in the `maze_previews` folder.
