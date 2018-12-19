@@ -20,7 +20,7 @@ Install the above software before first use and edit the path in the python code
 Make sure to install the python libs!
 
 1. If OpenSCAD is in a nonstandard location, adjust path at top of `main.py` (folders for output and preview created when run)
-2. (optional) Adjust the `bs` (lid sides) value in `make shells.scad` for a new look if you like
+2. (optional) Adjust the `bs` (lid sides) value in `make_shells.scad` for a new look if you like
 3. (optional) Adjust values in `opt.ini` as you see fit
 4. (optional) Make a backup of `opt.ini` so you can reuse these values in the future
 5. Open a python shell and run `main.py` (you may be able to just double click it)
