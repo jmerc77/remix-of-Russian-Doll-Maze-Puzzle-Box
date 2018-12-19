@@ -26,7 +26,7 @@ halt = -1  # debug: terminate skipping this shell (0 to n to enable)
 rd.seed()
 
 USE_SCAD_THREAD_TRAVERSAL = False
-STL_DIR = "stl_files"
+STL_DIR = "_stls"#name gets tacked on later...
 PREV_DIR = "maze_previews"
 
 def openscad():
@@ -361,9 +361,39 @@ def gen():
     else:
         return True
 
+def ReadOpt():
+    global shells
+    global marge
+    global us
+    global mh
+    global mw
+    global mwt
+    global i
+    global tp
+    global STL_DIR
+    config = configparser.ConfigParser()
+    config.read("opt.ini")
+    if "DEFAULT" not in config:
+        print("ERROR: No DEFAULT section in opt.ini\n")
+        exit(1)
+    config = config["DEFAULT"]
+
+    shells = config.getint("levels") + 1  # levels
+    marge = config.getfloat("tolerance")
+    i = int(config.getboolean("maze_inside"))
+    tp = config.getint("transition_shell")
+    if tp >= shells:
+        tp = 0
+    us = config.getfloat("spacing")
+    mh = config.getint("units_tall")
+    mw = config.getint("units_wide")
+    mwt = config.getfloat("wall_thickness")
+    name = config.get("name")
+    STL_DIR=name+STL_DIR
+    
 
 if __name__ == "__main__":
-
+    ReadOpt()
     try:
         prepwd()
         # get scad version:
@@ -382,7 +412,6 @@ if __name__ == "__main__":
 
     d2 = 0
     shell = 0
-
     # make parts:
     p = abs(int(input("nub count (0=2 nubs,1=3 nubs,2=4 nubs, ...):"))) + 2
     tpp = 0
@@ -396,23 +425,7 @@ if __name__ == "__main__":
     stagmode = int(input("shift mode (0=none 1=random 2=random change 3=twist):"))
     if stagmode == 3:
         stagconst = abs(int(input("twist amount:")))
-    config = configparser.ConfigParser()
-    config.read("opt.ini")
-    if "DEFAULT" not in config:
-        print("ERROR: No DEFAULT section in opt.ini\n")
-        exit(1)
-    config = config["DEFAULT"]
-
-    shells = config.getint("levels") + 1  # levels
-    marge = config.getfloat("tolerance")
-    i = int(config.getboolean("maze_inside"))
-    tp = config.getint("transition_shell")
-    if tp >= shells:
-        tp = 0
-    us = config.getfloat("spacing")
-    mh = config.getint("units_tall")
-    mw = config.getint("units_wide")
-    mwt = config.getfloat("wall_thickness")
     while not gen():
         continue
     print("done!")
+    
