@@ -73,7 +73,7 @@ def has_scad_threading():
 def scad_version():
     cmd = [openscad(), "--version"]
     ver=sp.run(cmd,capture_output=True).stdout
-    ver=str(ver).replace("\\r","").replace("b'OpenSCAD version ","").replace("\\n'","").replace("-",".").split(".")	
+    ver=str(ver).replace("\\r","").replace("b\'OpenSCAD version ","").replace("\\n\'","").replace("-",".").split(".")	
     return (int(ver[0]), int(ver[1]), int(ver[2])) if ver else ()
 
 #runs the scad
@@ -157,7 +157,10 @@ def genmaze(mw, mh, stag):
         #all places we can continue cutting
         v = np.transpose(np.nonzero(np.logical_and(visited == 1, nbercount > 0)))
         # choose a tile to cut from
-        r = rd.randint(0, len(v) - 1)
+        if len(v) < 2:
+            r=0
+        else:
+            r = rd.randint(0, len(v) - 1)
         c = v[r]
         # choose wall to cut
         r = rd.randint(0, nbercount[c[0], c[1]] - 1)
@@ -390,8 +393,8 @@ def gen():
                         row.append("1")
                     else:
                         row.append("0")
-                matrix.append(f"[{','.join(row)}]")
-            s = f"[{','.join(matrix)}];"
+                matrix.append(row.join(","))
+            s = matrix.join(",")
         else:
             #empty maze
             s="[];"
@@ -403,17 +406,13 @@ def gen():
             maze_num = 2
             open_mode = "a+"
         with open("maze.scad", open_mode) as maze:
-            maze.write(f"maze{maze_num}=")
             maze.write(
-                "\n".join(
-                    [
-                        s,
-                        f"h{maze_num}={mh};",
-                        f"w{maze_num}={mw * p};",
-                        f"st{maze_num}={st};",
-                        f"ex{maze_num}={ex};",
-                    ]
-                )
+                (["maze"+str(maze_num)+"="+s,
+                  "h"+str(maze_num)+"="+str(mh)+";",
+                  "w"+str(maze_num)+"="+str(mw*p)+";",
+                  "st"+str(maze_num)+"="+str(st)+";",
+                  "ex"+str(maze_num)+"="+str(ex)+";",
+                  ""]).join("\n")
             )
         #non lid
         base = 1
@@ -430,22 +429,19 @@ def gen():
             mos = shells - shell - 2
         with open("config.scad", "w+") as cfg:
             cfg.write(
-                "\n".join(
-                    [
-                        f"p={p};",
-                        f"tpp={tpp};",
-                        f"is={shell};",
-                        f"os={mos};",
-                        f"lid={lid};",
-                        f"base={base};",
-                        f"iw={wt};",
-                        f"id={d};",
-                        f"s={us};",
-                        f"i={i};",
-                        f"bd={d + wt * 2 + us * 2};",
-                        f"m={marge};",
-                    ]
-                )
+                (["p="+str(p)+";",
+                  "tpp="+str(tpp)+";",
+                  "is="+str(shell)+";",
+                  "os="+str(mos)+";",
+                  "lid="+str(lid)+";",
+                  "base="+str(base)+";",
+                  "iw="+str(wt)+";",
+                  "id="+str(d)+";",
+                  "s="+str(us)+";",
+                  "i="+str(i)+";",
+                  "bd="+str(d + wt * 2 + us * 2)+";",
+                  "m="+str(marge)+";",
+                  ""]).join("\n")
             )
         #save diameter of this one for later
         if shell < shells - 2:
