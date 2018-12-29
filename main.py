@@ -72,8 +72,9 @@ def has_scad_threading():
 #checks version
 def scad_version():
     cmd = [openscad(), "--version"]
-    ver=sp.run(cmd,capture_output=True).stdout
-    ver=str(ver).replace("\\r","").replace("b\'OpenSCAD version ","").replace("\\n\'","").replace("-",".").split(".")	
+    ver=str(sp.Popen(cmd,stdout=sp.PIPE).stdout.read())
+    print(ver)
+    ver=str(ver).replace("\\r","").replace("b'OpenSCAD version ","").replace("\\n'","").replace("-",".").split(".")	
     return (int(ver[0]), int(ver[1]), int(ver[2])) if ver else ()
 
 #runs the scad
