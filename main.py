@@ -394,11 +394,11 @@ def gen():
                         row.append("1")
                     else:
                         row.append("0")
-                matrix.append(row.join(","))
-            s = matrix.join(",")
+                matrix.append(",".join(row))
+            s = ",".join(matrix)
         else:
             #empty maze
-            s="[];"
+            s=""
         #write the maze
         if tpp < 1:
             maze_num = 1
@@ -408,12 +408,12 @@ def gen():
             open_mode = "a+"
         with open("maze.scad", open_mode) as maze:
             maze.write(
-                (["maze"+str(maze_num)+"="+s,
+                "\n".join(["maze"+str(maze_num)+"=["+s+"];",
                   "h"+str(maze_num)+"="+str(mh)+";",
                   "w"+str(maze_num)+"="+str(mw*p)+";",
                   "st"+str(maze_num)+"="+str(st)+";",
                   "ex"+str(maze_num)+"="+str(ex)+";",
-                  ""]).join("\n")
+                  ""])
             )
         #non lid
         base = 1
@@ -430,7 +430,7 @@ def gen():
             mos = shells - shell - 2
         with open("config.scad", "w+") as cfg:
             cfg.write(
-                (["p="+str(p)+";",
+                "\n".join(["p="+str(p)+";",
                   "tpp="+str(tpp)+";",
                   "is="+str(shell)+";",
                   "os="+str(mos)+";",
@@ -442,7 +442,7 @@ def gen():
                   "i="+str(i)+";",
                   "bd="+str(d + wt * 2 + us * 2)+";",
                   "m="+str(marge)+";",
-                  ""]).join("\n")
+                  ""])
             )
         #save diameter of this one for later
         if shell < shells - 2:
@@ -482,20 +482,16 @@ def readOpt():
     global p
     global tp
     global STL_DIR
+    global stagmode
+    global stagconst
+    global difficulty
     config = configparser.ConfigParser()
     config.read("opt.ini")
-    if "DEFAULT" not in config:
-        print("ERROR: No DEFAULT section in opt.ini\n")
+    if "DEFAULT" not in config or "MAZE" not in config:
+        print("ERROR: No DEFAULT and/or MAZE section in opt.ini; Must have both.\n")
         exit(1)
+    mazeconfig=config["MAZE"]
     config = config["DEFAULT"]
-    #seeding...
-    seed=config.get("seed").replace("\r","").replace("\n","")
-    if not seed.isnumeric() or "\\" in seed or "." in seed:
-        # Make sure we have a fresh random seed
-        rd.seed()
-    else:
-        #use seed from ini
-        rd.seed(int(seed))
     p = abs(config.getint("nubs")-2) + 2
     shells = config.getint("levels") + 1
     marge = config.getfloat("tolerance")
@@ -509,6 +505,22 @@ def readOpt():
     mwt = config.getfloat("wall_thickness")
     name = config.get("name")
     STL_DIR=name+STL_DIR
+    #maze options
+    #seeding...
+    seed=mazeconfig.get("seed").replace("\r","").replace("\n","")
+    if not seed.isnumeric() or "\\" in seed or "." in seed:
+        # Make sure we have a fresh random seed
+        rd.seed()
+    else:
+        #use seed from ini
+        rd.seed(int(seed))
+    difficulty=abs(mazeconfig.getfloat("diff",100.0))
+    if difficulty>100:
+        difficulty=100
+    stagmode = mazeconfig.getint("shift",1)
+    stagconst = 0
+    if stagmode == 3:
+        stagconst = abs(mazeconfig.getint("twist",1))
     
 if __name__ == "__main__":
     
@@ -537,15 +549,9 @@ if __name__ == "__main__":
     d2 = 0
     shell = 0
     tpp = 0
-    stagconst = 0
-    #maze options
-    difficulty=abs(float(input("difficulty (length of path); 0.0 (easy) to 100.0 (hard): ")))
-    if difficulty>100:
-        difficulty=100
-    stagmode = int(input("shift mode (0=none 1=random 2=random change 3=twist):"))
-    if stagmode == 3:
-        stagconst = abs(int(input("twist amount:")))
+    
     # make parts:
     while not gen():
         continue
-    print("done!")
+    input("done!")
+    
