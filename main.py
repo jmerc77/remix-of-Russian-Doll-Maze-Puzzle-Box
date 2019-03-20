@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-OPENSCAD_PATH = "P:/Program Files/OpenSCAD/openscad.com"
+# OPENSCAD_PATH = "P:/Program Files/OpenSCAD/openscad.com"
 # If you keep OpenSCAD in an unusual location, uncomment the above line of code and
 # set it to the full path to the openscad executable.
 # Note: Windows/python now support forward-slash characters in paths, so please use
@@ -343,7 +343,7 @@ def gen():
                         mw = int(math.ceil((d / p + us) * np.pi / 2 / us))
                     else:
                         #set the maze width
-                        mw = int(math.ceil((d2 / p + us) * np.pi / 2 / us))
+                        mw = int(math.ceil((d2 / p + us) * np.pi / us))
                 #increase maze height
                 mh += 1
         else:
@@ -395,10 +395,10 @@ def gen():
                     else:
                         row.append("0")
                 matrix.append(",".join(row))
-            s = ",".join(matrix)
+            s = "[["+"],[".join(matrix)+"]];"
         else:
             #empty maze
-            s=""
+            s="[];"
         #write the maze
         if tpp < 1:
             maze_num = 1
@@ -408,7 +408,7 @@ def gen():
             open_mode = "a+"
         with open("maze.scad", open_mode) as maze:
             maze.write(
-                "\n".join(["maze"+str(maze_num)+"=["+s+"];",
+                "\n".join(["maze"+str(maze_num)+"="+s,
                   "h"+str(maze_num)+"="+str(mh)+";",
                   "w"+str(maze_num)+"="+str(mw*p)+";",
                   "st"+str(maze_num)+"="+str(st)+";",
@@ -553,5 +553,4 @@ if __name__ == "__main__":
     # make parts:
     while not gen():
         continue
-    input("done!")
-    
+    print("done!")
