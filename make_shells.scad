@@ -2,16 +2,14 @@
 //revised (Remixed?) by Jonathan Mercier (aka. spool2kool)
 //Watermark removed...ummm, commented. (I do not like watermarks!)
 
-//Set these before making everything.
-//Do test runs before making and exporting all stl's.
 
-bs=10;	// Lid sides
-bversion=2;//0=grippy base  1=smooth base 2=base v2
-lefty=0;//left-handed thread enabler
+
+
 
 //do not change below here.
 //(Unless you know what you are doing!)
 //Works so far.
+include <options.scad>
 include <config.scad>
 include <maze.scad>
 
@@ -22,10 +20,25 @@ bh=s-eh2;	// Base height
 eh=(tpp<1&&i==0)?0:bh;// Extra height	
 wt=bh;	// Base wall thickness
 ih=(h1+1)*s;	// Inside height
+
 if(base)translate([lid?(id+s*4+iw*2+wt*2)/2:0,0,0])makebase();
 if(lid)translate([base?-(id+s*4+iw*2+wt*2)/2:0,0,0])makelid();
+
+
 module nub()
 {
+    if(oldnubs){
+      rotate([0,0,-90])
+    rotate([90,0,0])
+    translate([0,0,s/8]) 
+    hull()
+    {
+        cube([s/6*nubscale,s/6*nubscale,s/4],true);
+        translate([0,0,-s/4])
+        cube([s/2*nubscale,s/2*nubscale,s/4],true);
+    }  
+    }
+    else{
     rotate([0,0,-90])
     rotate([90,0,0])
     translate([0,0,s/8])
@@ -36,8 +49,21 @@ module nub()
         cube([s/2*nubscale-m*2,s/2*nubscale,s/4],true);
     }
 }
+}
 module knob()
 {
+    if(oldnubs){
+       rotate([0,0,-90])
+    rotate([90,0,0])
+    translate([0,0,s/8])
+    hull()
+    {
+        cube([s/6*nubscale,s/6*nubscale,s/4],true);
+        translate([0,0,-s/4])
+        cube([s/2*nubscale,s/2*nubscale,s/4],true);
+    }
+    }
+    else{
     rotate([0,0,-90])
     rotate([90,0,0])
     translate([0,0,s/8])
@@ -47,6 +73,7 @@ module knob()
         translate([0,0,-s/4])
         cube([s/2*nubscale,s/2*nubscale,s/4],true);
     }
+}
 }
 
 module right(w,i2,d=id/2+iw+s/2)
@@ -183,7 +210,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         rotate([0,0,x*360/w])
         {
             if(maze[y][x]==1 || maze[y][x]==3)right(w);
-            if(maze[y][x]==2 || maze[y][x]==3)up(i2,s);
+            if(maze[y][x]==2 || maze[y][x]==3)up(i2,s-m);
         }
         }
         else if(is>0){
