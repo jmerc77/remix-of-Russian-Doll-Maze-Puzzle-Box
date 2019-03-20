@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#OPENSCAD_PATH = "C:/Program Files/OpenSCAD/openscad.com"
+OPENSCAD_PATH = "P:/Program Files/OpenSCAD/openscad.com"
 # If you keep OpenSCAD in an unusual location, uncomment the above line of code and
 # set it to the full path to the openscad executable.
 # Note: Windows/python now support forward-slash characters in paths, so please use
@@ -22,8 +22,7 @@ from PIL import Image
 import subprocess as sp
 halt = -1  # debug: terminate skipping this shell (0 to n to enable)
 
-# Make sure we have a fresh random seed
-rd.seed()
+
 
 USE_SCAD_THREAD_TRAVERSAL = False
 STL_DIR = "_stls"#name gets tacked on later...
@@ -72,8 +71,10 @@ def has_scad_threading():
 #checks version
 def scad_version():
     cmd = [openscad(), "--version"]
-    ver=sp.Popen(cmd,stdout=sp.PIPE).stdout.read().decode("utf-8")
-    ver=ver.replace("\r","").replace("OpenSCAD version ","").replace("\n","").replace("-",".").split(".")	
+    ver=sp.Popen(cmd,stdout=sp.PIPE).stdout.readline().decode("utf-8")
+    
+    ver=ver.replace("\r","").replace("OpenSCAD version ","").replace("\n","").replace("-",".").split(".")
+    print(ver)
     return (int(ver[0]), int(ver[1]), int(ver[2])) if ver else ()
 
 #runs the scad
@@ -487,6 +488,14 @@ def readOpt():
         print("ERROR: No DEFAULT section in opt.ini\n")
         exit(1)
     config = config["DEFAULT"]
+    #seeding...
+    seed=config.get("seed").replace("\r","").replace("\n","")
+    if not seed.isnumeric() or "\\" in seed or "." in seed:
+        # Make sure we have a fresh random seed
+        rd.seed()
+    else:
+        #use seed from ini
+        rd.seed(int(seed))
     p = abs(config.getint("nubs")-2) + 2
     shells = config.getint("levels") + 1
     marge = config.getfloat("tolerance")
@@ -502,6 +511,7 @@ def readOpt():
     STL_DIR=name+STL_DIR
     
 if __name__ == "__main__":
+    
     #read opt.ini
     readOpt()
     try:
@@ -539,4 +549,3 @@ if __name__ == "__main__":
     while not gen():
         continue
     print("done!")
-    
