@@ -104,7 +104,7 @@ module up(i2,q,d=id/2+iw+s/2,stp=3)
     for(a=[q/stp:q/stp:q]){
     if(i2==1){
         
-        translate([d+m/2,0,0])
+        translate([d,0,0])
         hull(){
             rotate([0,0,180])knob();
             translate([0,0,a])
@@ -112,7 +112,7 @@ module up(i2,q,d=id/2+iw+s/2,stp=3)
         } 
     }
 else{    
-    translate([d-m/2,0,0])
+    translate([d,0,0])
         hull()
         {
             knob();
@@ -173,18 +173,17 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         {
             
         rotate([0,0,st*360/w]){  
-                //translate([0,0,-bh])                up(0,d=id/2+m);
-		/*o=s/2+2+(p==1?m:0)-m;
-                           if(mm>o)
-                       translate([0,0,bh+2+m*2])
-                up(mm-o,stp=1);*/
+                
                 //lock
+            knobr=atan2(360/p/4*bh/(360/p),
+            ((id/2+iw+s/2)*2*PI/p/4));
+            
                  if(os){
-                     for(b=[0:180/p/2/w:360/p/2])rotate([0,0,(lefty?b:-b)])translate([id/2+iw+s/2-m/2,0,bh-b*bh/(360/p)+s/4+s/4/nubscale])knob();
+                     for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2+iw+s/2,0,bh-b*bh/(360/p)+s/4+s/4/nubscale])rotate([(lefty?-knobr:knobr),0,0])knob();
                     hull(){
                 
-                        translate([id/2+iw+s/2-m/2,0,bh+m*2+s/3.5])knob();
-                        translate([id/2+iw+s/2-m/2,0,bh+s/1.5+m*2+s/3.5+s/4/nubscale])knob();}
+                        translate([id/2+iw+s/2,0,bh+m*2+s/3.5])knob();
+                        translate([id/2+iw+s/2,0,bh+s/1.5+m*2+s/3.5+s/4/nubscale])knob();}
                      }
                      else
                      {
@@ -205,7 +204,6 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         
         for(y=[0:1:h-1])
         translate([0,0,mm+y*s-m*2-s/6+((tpp<1&&i==0)?s:0)])
-        //render()
         for(x=[0:1:w-1])
         rotate([0,0,x*360/w])
         {
@@ -219,16 +217,14 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         {
             rotate([0,0,st*360/w])
            { 
-                //translate([0,0,-bh])                up(0,d=id/2+m);
-		/*o=s/2+2+(p==1?m:0)-m;
-                           if(mm>o)
-                       translate([0,0,bh+2+m*2])
-                up(mm-o,d=id/2+m,stp=1);*/
-                //lock
                 
-     for(b=[0:180/p/2/w:360/p/2])rotate([0,0,(lefty?b:-b)])translate([id/2+m/2,0,eh+bh-b*bh/(360/p)+s/2+s/4/nubscale])rotate([0,0,180])knob();
-                     hull(){translate([id/2+m/2,0,bh+eh+s/2])rotate([0,0,180])knob();
-                         translate([id/2+m/2,0,bh+eh+s+s/4/nubscale])rotate([0,0,180])knob();    
+                //lock
+                knobr=-atan2(360/p/4*bh/(360/p),
+            ((id-s/2)*PI/p/4));
+               
+     hull()for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2,0,eh+bh-b*bh/(360/p)+s/4])rotate([0,0,180])rotate([(lefty?-knobr:knobr),0,0])knob();
+                     hull(){translate([id/2,0,bh+eh+s/2])rotate([0,0,180])knob();
+                         translate([id/2,0,bh+eh+s+s/4/nubscale])rotate([0,0,180])knob();    
                          }
                      }
             
@@ -239,7 +235,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
             // Maze
         for(y=[0:1:h-1])
         translate([0,0,bh+mm+y*s-m*2])
-        //render()
+        
         for(x=[0:1:w-1])
         rotate([0,0,x*360/w])
         {
@@ -290,11 +286,7 @@ else
 }
 	else
         translate([0,0,-eh])outer(bh+wt);
-	/*hull()
-	{
-           translate([0,0,wt-1])          cylinder(d=id+m*2-2,h=bh,$fn=100);
-           translate([0,0,wt])           cylinder(d=id+m*2,h=bh,$fn=100);
-	}*/
+	
 	if(os && bversion==0)
 	{
            for(a=[0:360/w1:359])
@@ -313,13 +305,7 @@ else
 	{
            translate([0,0,wt+ih-id/2-1+eh])
            cylinder(d1=0,d2=id+m*2+6,h=id/2+2,$fn=100);
-            /*difference()
-            {
-                translate([0,0,wt+ih-1])
-                cylinder(d=id+iw*2+s*2,h=2);
-                translate([0,0,wt+ih-3])
-                cylinder(d1=id+iw*2+s-m*2+4,d2=0,h=(id+iw*2+s-m*2)/2+2,$fn=100);
-            }*/
+            
 	}
     //mazes
     if(tpp<1 || tpp==2)
@@ -429,18 +415,13 @@ mm=(ih-bh-s*h1)/2+s/2+eh;
         {
             rotate([0,0,st1*360/w1])
             {
-                /*translate([0,0,eh+bh+s/2])
-                up(0);
-		o=s+(p==1?m:0)+m*2;
-                if(mm>o)
-                translate([0,0,eh+bh+o])
-                up(mm-o,stp=1);*/
+                
                 translate([0,0,bh+eh+s])up(i,s);
             }
             rotate([0,0,ex1*360/w1])translate([0,0,eh/2+bh+mm*1.75+s*(h1-1)])up(i,mm/3);
         }
             // Maze
-        for(y=[0:1:h1-1])        translate([0,0,eh+bh+mm+y*s+m+s/2])        //render()
+        for(y=[0:1:h1-1])        translate([0,0,eh+bh+mm+y*s+m+s/2])        
             for(x=[0:1:w1-1])        rotate([0,0,x*360/w1])
         {
             if(maze1[y][x]==1 || maze1[y][x]==3)               right(w1,i);
@@ -449,9 +430,7 @@ mm=(ih-bh-s*h1)/2+s/2+eh;
     }
     }
                 //signature
-        //translate([0,0,wt-2])
-        //linear_extrude(height=wt)
-        //aa((id+s+iw*2+m*2-2)/1.1,white=1);
+        //translate([0,0,wt-2])linear_extrude(height=wt)aa((id+s+iw*2+m*2-2)/1.1,white=1);
     }
     if(i==0){
             for(a=[0:360/p:359])
