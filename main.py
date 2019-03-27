@@ -74,7 +74,8 @@ def scad_version():
     ver=sp.Popen(cmd,stdout=sp.PIPE).stdout.readline().decode("utf-8")
     
     ver=ver.replace("\r","").replace("OpenSCAD version ","").replace("\n","").replace("-",".").split(".")
-    print(ver)
+    for v in range(len(ver)):
+        ver[v]=re.sub('[^0-9]','', ver[v])
     return (int(ver[0]), int(ver[1]), int(ver[2])) if ver else ()
 
 #runs the scad
@@ -331,7 +332,7 @@ def gen():
                 #is the maze on the outside?
                 if i == 0:
                     #set the maze width
-                    mw = int(math.ceil((d / p + us) * np.pi / 2 / us))
+                    mw = int(math.ceil((d / p + us) * np.pi / us))
                     #is this the shell before the lid?
                     if shell == (shells - 2):
                         #increase maze height
@@ -340,10 +341,10 @@ def gen():
                     #is this the lid?
                     if shell == (shells - 1):
                         #set the maze width
-                        mw = int(math.ceil((d / p + us) * np.pi / 2 / us))
+                        mw = int(math.ceil((d / p + us*2) * np.pi / 2 / us))
                     else:
                         #set the maze width
-                        mw = int(math.ceil((d2 / p + us) * np.pi / 2 * 1.5 / us))
+                        mw = int(math.ceil((d2 / p + us*2) * np.pi / 2 / us))
                 #increase maze height
                 mh += 1
         else:
