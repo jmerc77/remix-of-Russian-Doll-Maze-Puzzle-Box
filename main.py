@@ -383,7 +383,7 @@ def gen():
                 #is the maze on the outside?
                 if i == 0:
                     #set the maze width
-                    mw = int(math.ceil((d / p + us) * np.pi / us))
+                    mw = int(math.ceil(((d + us * 2) / p) * np.pi / us))
                     #is this the shell before the lid?
                     if shell == (shells - 2):
                         #increase maze height
@@ -392,10 +392,10 @@ def gen():
                     #is this the lid?
                     if shell == (shells - 1):
                         #set the maze width
-                        mw = int(math.ceil((d / p + us*2) * np.pi / us))
+                        mw = int(math.ceil(((d + us) / p) * np.pi / us))
                     else:
                         #set the maze width
-                        mw = int(math.ceil((d2 / p + us) * np.pi / us))
+                        mw = int(math.ceil(((d2 + us) / p) * np.pi / us))
                 #increase maze height
                 mh += 1
         else:
@@ -616,3 +616,4 @@ if __name__ == "__main__":
     while not gen():
         continue
     print("done!")
+    
