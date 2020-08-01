@@ -1,7 +1,5 @@
-prev
-stl_files
+maze_previews
+*_files
 maze.scad
 config.scad
-
 .vscode
-
