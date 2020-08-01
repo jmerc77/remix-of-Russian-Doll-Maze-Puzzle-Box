@@ -20,12 +20,13 @@ import math
 import re
 from PIL import Image
 import subprocess as sp
+
 halt = -1  # debug: terminate skipping this shell (0 to n to enable)
 
 
 
 USE_SCAD_THREAD_TRAVERSAL = False
-STL_DIR = "_stls"#name gets tacked on later...
+STL_DIR = "_files"#name gets tacked on later...
 PREV_DIR = "maze_previews"
 
 #tries to get the path to openscad
@@ -73,13 +74,15 @@ def scad_version():
     cmd = [openscad(), "--version"]
     ver=sp.Popen(cmd,stdout=sp.PIPE).stdout.readline().decode("utf-8")
     
-    ver=ver.replace("\r","").replace("OpenSCAD version ","").replace("\n","").replace("-",".").split(".")
+    ver=ver.replace("\r","").replace("\n","").replace("-",".").replace("OpenSCAD version ","").split(".")
     for v in range(len(ver)):
         ver[v]=re.sub('[^0-9]','', ver[v])
-    return (int(ver[0]), int(ver[1]), int(ver[2])) if ver else ()
+    print(ver)
+    return (int(ver[0]), int(ver[1])) if ver else ()
 
 #runs the scad
 def execscad(threadid=0):
+    global ext
     print("Executing OpenSCAD script...")
     cmd = [openscad()]
     if USE_SCAD_THREAD_TRAVERSAL:
@@ -87,7 +90,7 @@ def execscad(threadid=0):
     cmd.extend(
         [
             "-o",
-            os.path.join(os.getcwd(), STL_DIR, str(shell + 1) + ".stl"),
+            os.path.join(os.getcwd(), STL_DIR, str(shell + 1) + "." + ext),
             os.path.join(os.getcwd(), "make_shells.scad"),
         ]
     )
@@ -164,36 +167,43 @@ def genmaze(mw, mh, stag):
         else:
             r = rd.randint(0, len(v) - 1)
         c = v[r]
-        # choose wall to cut
-        r = rd.randint(0, nbercount[c[0], c[1]] - 1)
-        n = np.argwhere(nbers[c[0], c[1]])[r]
-        # cut the wall
-        walls[c[0], c[1], n] = 0
-        #temp for the tile we are cutting
-        c2 = c
-        #the other side of the wall
-        if n == 0:
-            n2 = 1
-            c2[0] = c[0] - 1
-        elif n == 1:
-            n2 = 0
-            c2[0] = c[0] + 1
-        elif n == 2:
-            n2 = 3
-            c2[1] = c[1] - 1
-        else:
-            n2 = 2
-            c2[1] = c[1] + 1
-        #wrap horizontally
-        c2[0] = int((c2[0] + mw) % mw)
-        #mark as visited
-        visited[c2[0], c2[1]] = 1
-        #cut the other side
-        walls[c2[0], c2[1], n2] = 0
-        #update the possible ways to cut again
-        udnbers(nbers, visited, nbercount, mw, mh, stag)
-        #update the number of places we have cut a path already
-        vcount = vcount + 1
+        #keep cutting until can't or min_branch is reached
+        for i in range(min_branch):
+            # choose wall to cut
+            r = rd.randint(0, nbercount[c[0], c[1]] - 1)
+            n = np.argwhere(nbers[c[0], c[1]])[r]
+            # cut the wall
+            walls[c[0], c[1], n] = 0
+            #temp for the tile we are cutting
+            c2 = c
+            #the other side of the wall
+            if n == 0:
+                n2 = 1
+                c2[0] = c[0] - 1
+            elif n == 1:
+                n2 = 0
+                c2[0] = c[0] + 1
+            elif n == 2:
+                n2 = 3
+                c2[1] = c[1] - 1
+            else:
+                n2 = 2
+                c2[1] = c[1] + 1
+            #wrap horizontally
+            c2[0] = int((c2[0] + mw) % mw)
+            #mark as visited
+            visited[c2[0], c2[1]] = 1
+            #cut the other side
+            walls[c2[0], c2[1], n2] = 0
+            #update the possible ways to cut again
+            udnbers(nbers, visited, nbercount, mw, mh, stag)
+            #update the number of places we have cut a path already
+            vcount = vcount + 1
+            #prepare cut again...
+            c=c2
+            #...if we can. otherwise break the for.
+            if nbercount[c[0],c[1]]==0:
+                break
     return walls
 
 #makes and writes the preview image
@@ -253,8 +263,7 @@ def solver(maze,s):
             #is this a posible end?
             if y==0:
                 #include this length in return value.
-                #modified a little for extra difficulty levels.
-                ret.append(length+downcnt/mh)
+                ret.append(length)
             #can we move on?
             if opencnt>0:
                 #move on but do not bactrack.
@@ -320,7 +329,7 @@ def gen():
             #is this the first?
             if shell == 0:
                 #set the diameter
-                d = (mw * us * p) / np.pi + wt - marge * 2
+                d = (mw * us * p) / np.pi/2 + wt - marge * 2
             else:
                 #are we transitioning?
                 if shell == tp:
@@ -486,6 +495,8 @@ def readOpt():
     global stagmode
     global stagconst
     global difficulty
+    global min_branch
+    global ext
     config = configparser.ConfigParser()
     config.read("opt.ini")
     if "DEFAULT" not in config or "MAZE" not in config:
@@ -493,6 +504,11 @@ def readOpt():
         exit(1)
     mazeconfig=config["MAZE"]
     config = config["DEFAULT"]
+    version = scad_version()
+    if config.getboolean("o3mf") and version[0]>=2019:
+        ext="3mf"
+    else:
+        ext="stl"
     p = abs(config.getint("nubs")-2) + 2
     shells = config.getint("levels") + 1
     marge = config.getfloat("tolerance")
@@ -518,6 +534,9 @@ def readOpt():
     difficulty=abs(mazeconfig.getfloat("diff",100.0))
     if difficulty>100:
         difficulty=100
+    min_branch=mazeconfig.getint("min_branch",5)
+    if min_branch<1:
+        min_branch=5
     stagmode = mazeconfig.getint("shift",1)
     stagconst = 0
     if stagmode == 3:
