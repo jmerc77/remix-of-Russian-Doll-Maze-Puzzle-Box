@@ -15,7 +15,7 @@ include <maze.scad>
 
 //computed 
 eh2=1;// Extra height
-nubscale=1;
+nubscale=1.5;
 bh=s-eh2;	// Base height
 eh=(tpp<1&&i==0)?0:bh;// Extra height	
 wt=bh;	// Base wall thickness
