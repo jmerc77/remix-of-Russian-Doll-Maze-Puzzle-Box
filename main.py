@@ -197,7 +197,7 @@ def genmaze(mw, mh, stag):
             #update the possible ways to cut again
             udnbers(nbers, visited, nbercount, mw, mh, stag)
             #update the number of places we have cut a path already
-            vcount = vcount + 1
+            vcount = np.sum(visited,dtype="int")
             #prepare cut again...
             c=c2
             #...if we can. otherwise break the for.
@@ -395,7 +395,7 @@ def gen():
                         mw = int(math.ceil((d / p + us*2) * np.pi / us))
                     else:
                         #set the maze width
-                        mw = int(math.ceil((d2 / p + us*2) * np.pi / us))
+                        mw = int(math.ceil((d2 / p + us) * np.pi / us))
                 #increase maze height
                 mh += 1
         else:
@@ -616,4 +616,3 @@ if __name__ == "__main__":
     while not gen():
         continue
     print("done!")
-    
