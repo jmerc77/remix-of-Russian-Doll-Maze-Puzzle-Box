@@ -77,7 +77,6 @@ def scad_version():
     ver=ver.replace("\r","").replace("\n","").replace("-",".").replace("OpenSCAD version ","").split(".")
     for v in range(len(ver)):
         ver[v]=re.sub('[^0-9]','', ver[v])
-    print(ver)
     return (int(ver[0]), int(ver[1])) if ver else ()
 
 #runs the scad
@@ -142,7 +141,7 @@ def genmaze(mw, mh, stag):
     nbers = np.ones(mw * mh * 4)
     #walls of the maze tiles
     # walls are: 0=L 1=R 2=U 3=D
-    walls = np.ones(mw * mh * 4)
+    walls = np.ones(mw * mh * 4,dtype="int")
     #start here
     r = rd.randint(0, mw*mh-1)
     #mark start as visited
@@ -213,6 +212,7 @@ def preview(maze):
         #start and end
         im.putpixel((1 + ex * 2, 0), 255)#end
         im.putpixel((1 + st * 2, mh * 2), 255)#start
+        
         for y in range(0, mh):
             for x in range(0, mw):
                 #tile pos
@@ -228,7 +228,18 @@ def preview(maze):
                     #no wall?
                     if maze[x, y, idx] == 0:
                         #cut a hole!
+                        
                         im.putpixel((imnx[idx], imny[idx]), 255)
+        #fill in answer key                
+        ans=ans_solver(maze,st,ex)
+        for y in range(0, mh):
+            for x in range(0, mw):
+                imx = 1 + x * 2
+                imy = 1 + y * 2
+                if [x,y] in ans:
+                    im.putpixel((imx, imy), 128)
+                else:
+                    im.putpixel((imx, imy), 255) 
         #transition shell maze 2?
         if tpp == 2:
             #save as maze 2
@@ -236,6 +247,37 @@ def preview(maze):
         else:
             #save as maze 1
             im.save(os.path.join(os.getcwd(), PREV_DIR, str(shell + 1) + ".png"))
+#for ans key in previews
+def ans_solver(maze,s,e):
+    ret=[[s,mh],[s,mh-1]]
+    direction=1#r,u,l,d
+    x=s
+    y=mh-1
+    direction2wall=[1,2,0,3]#r,u,l,d -> l,r,u,d
+    direction2xy=[[1,0],[0,-1],[-1,0],[0,1]]#r,u,l,d
+    while x!=e or y>0:
+        #walls at x,y in the maze
+        here=maze[x,y]
+        #print(x,y,direction,4-np.sum(here))
+        if here[direction2wall[(direction+3)%4]]==0:
+            direction=(direction+3)%4
+        #change direction until no wall in case of front wall
+        if here[direction2wall[direction]]==1:
+            
+            while here[direction2wall[direction]]==1:
+                #change direction
+                #print(direction,here[direction2wall[direction]])
+                direction=(direction+1)%4
+        x=(x+direction2xy[direction][0]+mw)%mw
+        y=y+direction2xy[direction][1]
+        #are we backtracking?
+        if x==ret[-2][0] and y==ret[-2][1]:
+            ret=ret[0:-1]
+            #print("backtracking")
+        else:
+            ret.append([x,y])
+    #print(ret)    
+    return ret[1:]
 
 #finds the lengths from a start to all ends of a maze  
 def solver(maze,s):
