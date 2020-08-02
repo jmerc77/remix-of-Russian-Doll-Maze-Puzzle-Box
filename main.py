@@ -21,6 +21,7 @@ import re
 from PIL import Image
 import subprocess as sp
 
+skip = -1 # debug: skip all shells up to here (0 to n to enable)
 halt = -1  # debug: terminate skipping this shell (0 to n to enable)
 
 
@@ -355,9 +356,10 @@ def gen():
     global tpp
     #are we done yet?
     if shell < shells:
+        
         #debug halt
-        if shell == halt:
-            exit()
+        if shell >= halt and halt > -1:
+            return True
         #is the next shell the transition?
         if shell + 1 > 0 and shell + 1 < shells and shell + 1 == tp and tpp < 1:
             tpp = -1
@@ -384,10 +386,10 @@ def gen():
                 if i == 0:
                     #set the maze width
                     mw = int(math.ceil(((d + us * 2) / p) * np.pi / us))
-                    #is this the shell before the lid?
+                    '''#is this the shell before the lid?
                     if shell == (shells - 2):
                         #increase maze height
-                        mh += 1
+                        mh += 1'''
                 else:
                     #is this the lid?
                     if shell == (shells - 1):
@@ -423,7 +425,6 @@ def gen():
         elif stagmode == 3:
             #twist it!
             stag = np.multiply(np.arange(0, mh), stagconst).astype("int")
-            
         #do we even have a maze with this part?
         if ((i == 0 and shell < shells - 1) or (i == 1 and shell > 0)) and tpp != 1:
             # maze
@@ -513,7 +514,9 @@ def gen():
         #are we done with this shell?
         if tpp < 1:
             #make it!
-            execscad()
+            #debug skip
+            if shell >= skip or skip < 0:
+                execscad()
             #on to the next
             shell = shell + 1
         #not done making parts
