@@ -24,7 +24,6 @@ ih=(h1+1)*s;	// Inside height
 if(base)translate([lid?(id+s*4+iw*2+wt*2)/2:0,0,0])makebase();
 if(lid)translate([base?-(id+s*4+iw*2+wt*2)/2:0,0,0])makelid();
 
-
 module nub()
 {
     if(oldnubs){
@@ -188,8 +187,8 @@ module basemaze(maze,w,h,st,ex,mm,i2)
                      else
                      {
                          hull(){
-                             translate([id/2+iw+s/2-m/2,0,bh-s/2])knob();
-                             translate([id/2+iw+s/2-m/2,0,bh+s])knob();
+                             translate([id/2+iw+s/2,0,bh-s/2+s])knob();
+                             translate([id/2+iw+s/2,0,bh+s*2.25])knob();
                              
                          }
                      }
@@ -203,7 +202,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         // Maze
         
         for(y=[0:1:h-1])
-        translate([0,0,mm+y*s-m*2-s/6+((tpp<1&&i==0)?s:0)])
+        translate([0,0,mm+y*s+((!os&&(i2==0||tpp==2))?s:0)-m*2-s/6+((tpp<1&&i==0)?s:0)])
         for(x=[0:1:w-1])
         rotate([0,0,x*360/w])
         {
@@ -297,9 +296,9 @@ else
     difference()
     {
         translate([0,0,bh-0.01])
-        cylinder(d=id+iw*2+s-m*2,h=wt+ih-bh+eh,$fn=100);
+        cylinder(d=id+iw*2+s-m*2,h=wt+ih-bh+eh+((!os&&(i==0||tpp==2))?s:0),$fn=100);
 	           translate([0,0,wt+m*2])
-           cylinder(d=id+m*2,h=ih+1+eh,$fn=100);
+           cylinder(d=id+m*2,h=ih+1+eh+((!os&&(i==0||tpp==2))?s:0),$fn=100);
 	   
 	if(!is)
 	{
@@ -352,30 +351,30 @@ else
 	   }
        
    }
-   if(bversion==2 && (i==0 || tpp==-1))
+   if(bversion==2 && (i==0 || tpp==-1 || tpp==2))
     {
         for(c=[0:3.6:359])
         {
-            if(os&&-i==tpp)hull()
+            if(os&&(-i==tpp||tpp==2))hull()
             {
                 rotate([0,0,c])translate([(bd+s/4-m*2)/2,0,bh])knob();
                 rotate([0,0,c+3.6])translate([(bd+s/4-m*2)/2,0,bh])knob();
             }
          if(tpp==2)
          {
-            if(is && (tpp>-1 || i==0))hull()
+            if(is && i==0)hull()
             {
-                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h2*s+s-s/6])knob();
-                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h2*s+s-s/6])knob();
+                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h2*s+s-s/6+((!os&&(i==0||tpp==2))?s:0)])knob();
+                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h2*s+s-s/6+((!os&&(i==0||tpp==2))?s:0)])knob();
             }
         }
         else if(is && (tpp>-1 || i==0))hull()
             {
-                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h1*s+s])knob();
-                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h1*s+s])knob();
+                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h1*s+s+((!os&&(i==0||tpp==2))?s:0)])knob();
+                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h1*s+s+((!os&&(i==0||tpp==2))?s:0)])knob();
             }
         }
-        if(os&&-i==tpp)for(c=[0:1:1])
+        if(os&&(-i==tpp||tpp==2))for(c=[0:1:1])
         {
             hull()
             {
