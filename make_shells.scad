@@ -180,9 +180,8 @@ module basemaze(maze,w,h,st,ex,mm,i2)
                  if(os){
                      for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2+iw+s/2,0,bh-b*bh/(360/p)+s/4+s/4/nubscale])rotate([(lefty?-knobr:knobr),0,0])knob();
                     hull(){
-                
                         translate([id/2+iw+s/2,0,bh+m*2+s/3.5])knob();
-                        translate([id/2+iw+s/2,0,bh+s/1.5+m*2+s/3.5+s/4/nubscale])knob();}
+                        translate([id/2+iw+s/2,0,bh+m*2+s])knob();}
                      }
                      else
                      {
@@ -362,16 +361,17 @@ else
             }
          if(tpp==2)
          {
-            if(is && i==0)hull()
+            if(is)hull()
             {
-                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h2*s+s-s/6+((!os&&(i==0||tpp==2))?s:0)])knob();
-                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h2*s+s-s/6+((!os&&(i==0||tpp==2))?s:0)])knob();
+                
+                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h2*s-s/6])knob();
+                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h2*s-s/6])knob();
             }
         }
         else if(is && (tpp>-1 || i==0))hull()
             {
-                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h1*s+s+((!os&&(i==0||tpp==2))?s:0)])knob();
-                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h1*s+s+((!os&&(i==0||tpp==2))?s:0)])knob();
+                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h1*s+s+((!os&&(i==0))?s:0)])knob();
+                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h1*s+s+((!os&&(i==0))?s:0)])knob();
             }
         }
         if(os&&(-i==tpp||tpp==2))for(c=[0:1:1])
