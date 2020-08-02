@@ -364,8 +364,8 @@ else
             if(is)hull()
             {
                 
-                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h2*s-s/6])knob();
-                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h2*s-s/6])knob();
+                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h2*s])knob();
+                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h2*s])knob();
             }
         }
         else if(is && (tpp>-1 || i==0))hull()
