@@ -22,7 +22,7 @@ from PIL import Image
 import subprocess as sp
 
 skip = -1 # debug: skip all shells up to here (0 to n to enable)
-halt = -1  # debug: terminate skipping this shell (0 to n to enable)
+halt = -1 # debug: terminate skipping this shell (0 to n to enable)
 
 
 
@@ -361,7 +361,7 @@ def gen():
         if shell >= halt and halt > -1:
             return True
         #is the next shell the transition?
-        if shell + 1 > 0 and shell + 1 < shells and shell + 1 == tp and tpp < 1:
+        if shell + 1 > 0 and shell + 1 < shells and shell + 2 == tp and tpp < 1:
             tpp = -1
         #part status
         if tpp < 1:
@@ -501,7 +501,7 @@ def gen():
         if shell < shells - 2:
             d2 = d
         #was this the transition shell?
-        if shell > 0 and shell < shells and shell == tp and tpp < 1:
+        if shell > 0 and shell < shells and shell+1 == tp and tpp < 1:
             #get ready for transition stage 2
             if i == 0:  # double nub transition
                 tpp = 1
@@ -559,7 +559,7 @@ def readOpt():
     marge = config.getfloat("tolerance")
     i = int(config.getboolean("maze_inside"))
     tp = config.getint("transition_shell")
-    if tp >= shells-1:
+    if tp > shells-1:
         tp = 0
     us = config.getfloat("spacing")
     mh = config.getint("units_tall")
