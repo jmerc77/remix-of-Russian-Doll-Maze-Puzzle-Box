@@ -373,33 +373,32 @@ def gen():
             #is this the first?
             if shell == 0:
                 #set the diameter
-                d = (mw * us * p) / np.pi/2 + wt - marge * 2
+                d = (mw * us * p) / np.pi / 2 - wt - marge * 2
+                print("diameter:",d)
             else:
                 #are we transitioning?
-                if shell == tp:
+                if shell+1 == tp:
                     #keep the diameter the same
                     d = d2
                 else:
                     #set the diameter
                     d = d2 + us + wt + marge * 2
+                    print("diameter:",d)
                 #is the maze on the outside?
                 if i == 0:
                     #set the maze width
-                    mw = int(math.ceil(((d + us * 2) / p) * np.pi / us))
-                    '''#is this the shell before the lid?
-                    if shell == (shells - 2):
-                        #increase maze height
-                        mh += 1'''
+                    mw = int(math.ceil((d + us) * np.pi / us / p))
                 else:
                     #set the maze width
-                    mw = int(math.ceil(((d2 + us) / p) * np.pi / us))
+                    mw = int(math.ceil((d2 + us) * np.pi / us / p ))
                 #increase maze height
                 mh += 1
         else:
             #set the diameter
             d = d2 + us + wt + marge * 2
+            print("diameter:",d)
             #set the maze width
-            mw = int(math.ceil(((d + us) / p) * np.pi / us))
+            mw = int(math.ceil((d + us) * np.pi / us / p))
             #increase maze height
             mh += 1
 
