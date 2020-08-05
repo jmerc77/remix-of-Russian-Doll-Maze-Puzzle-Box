@@ -43,7 +43,7 @@ module nub()
     translate([0,0,s/8])
     hull()
     {
-        cube([s/2*nubscale-m*2,s/6*nubscale,s/4],true);
+        translate([0,(s/6*nubscale)/2,0])cube([s/2*nubscale-m*2,s/3*nubscale,s/4],true);
         translate([0,0,-s/4])
         cube([s/2*nubscale-m*2,s/2*nubscale,s/4],true);
     }
@@ -68,7 +68,7 @@ module knob()
     translate([0,0,s/8])
     hull()
     {
-        cube([s/2*nubscale,s/6*nubscale,s/4],true);
+        translate([0,(s/6*nubscale)/2,0])cube([s/2*nubscale,s/3*nubscale,s/4],true);
         translate([0,0,-s/4])
         cube([s/2*nubscale,s/2*nubscale,s/4],true);
     }
