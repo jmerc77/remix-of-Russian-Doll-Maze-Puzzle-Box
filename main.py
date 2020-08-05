@@ -21,7 +21,7 @@ import re
 from PIL import Image
 import subprocess as sp
 
-skip = -1 # debug: skip all shells up to here (0 to n to enable)
+skip = 10 # debug: skip all shells up to here (0 to n to enable)
 halt = -1 # debug: terminate skipping this shell (0 to n to enable)
 
 
@@ -391,20 +391,15 @@ def gen():
                         #increase maze height
                         mh += 1'''
                 else:
-                    #is this the lid?
-                    if shell == (shells - 1):
-                        #set the maze width
-                        mw = int(math.ceil(((d + us*2) / p) * np.pi / us))
-                    else:
-                        #set the maze width
-                        mw = int(math.ceil(((d + us*2) / p) * np.pi / us))
+                    #set the maze width
+                    mw = int(math.ceil(((d + us) / p) * np.pi / us))
                 #increase maze height
                 mh += 1
         else:
             #set the diameter
             d = d2 + us + wt + marge * 2
             #set the maze width
-            mw = int(math.ceil((d / p + us) * np.pi / us))
+            mw = int(math.ceil(((d + us) / p) * np.pi / us))
             #increase maze height
             mh += 1
 
