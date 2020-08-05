@@ -392,7 +392,7 @@ def gen():
                         mh += 1'''
                 else:
                     #set the maze width
-                    mw = int(math.ceil(((d + us) / p) * np.pi / us))
+                    mw = int(math.ceil(((d2 + us) / p) * np.pi / us))
                 #increase maze height
                 mh += 1
         else:
