@@ -297,14 +297,14 @@ else
         //---------------------------- 
         translate([0,0,bh-0.01])
         //&&(i==1||tpp==2)
-        cylinder(d=id+iw*2+s-m*2,h=wt+ih-bh+eh+((!os)?s:0),$fn=100);
+        cylinder(d=id+iw*2+s-m*2,h=wt+ih-bh+eh+((!os||i==1)?s:0),$fn=100);
 	          
         translate([0,0,wt+m*2])
-           cylinder(d=id+m*2,h=ih+1+eh+((!os)?s:0),$fn=100);
+           cylinder(d=id+m*2,h=ih+1+eh+((!os||i==1)?s:0),$fn=100);
 	   
 	if(!is)
 	{
-           translate([0,0,wt+ih-id/2-1+eh])
+           translate([0,0,wt+ih-id/2-1+eh+((i==1)?s:0)])
            cylinder(d1=0,d2=id+m*2+6,h=id/2+2,$fn=100);
             
 	}
@@ -338,16 +338,16 @@ else
             difference(){
              for(a=[0:360/p:359])
               rotate([0,0,a])
-              translate([id/2+iw+s/2-m,0,wt+ih-s/4*nubscale+eh])
+              translate([id/2+iw+s/2-m,0,wt+ih-s/4*nubscale+eh+s])
               rotate([0,0,180])nub();
              
-             translate([0,0,wt+ih-id/2-1+eh])cylinder(d1=0,d2=id+m*2+6,h=id/2+2,$fn=100);
+             translate([0,0,wt+ih-id/2-1+eh+s])cylinder(d1=0,d2=id+m*2+6,h=id/2+2,$fn=100);
              }}
              else
              {
                  for(a=[0:360/p:359])
               rotate([0,0,a])
-              translate([id/2+iw+s/2-m,0,wt+ih-s/4*nubscale+eh])
+              translate([id/2+iw+s/2-m,0,wt+ih-s/4*nubscale+eh+s])
               rotate([0,0,180])nub();
              }
              
