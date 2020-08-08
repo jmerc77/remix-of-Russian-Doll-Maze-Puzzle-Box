@@ -294,9 +294,7 @@ else
     }
     difference()
     {
-        //---------------------------- 
         translate([0,0,bh-0.01])
-        //&&(i==1||tpp==2)
         cylinder(d=id+iw*2+s-m*2,h=wt+ih-bh+eh+((!os||i==1)?s:0),$fn=100);
 	          
         translate([0,0,wt+m*2])
@@ -329,7 +327,7 @@ else
            //--------------------
               for(a=[0:360/p:359])
               rotate([0,0,a])
-              translate([id/2+m,0,wt+ih-s/4*nubscale+eh+((!os)?s:0)])
+              translate([id/2+m,0,wt+ih-s/4*nubscale+eh+((!os||tpp==1)?s:0)])
               nub();
 	   }
        if(i==1 && tpp<2)
