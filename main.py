@@ -391,6 +391,9 @@ def gen():
                 else:
                     #set the maze width
                     mw = int(math.ceil((d2 + us) * np.pi / us / p ))
+                #extra height for transition
+                if tpp==2:
+                    mh += 1
                 #increase maze height
                 mh += 1
         else:
