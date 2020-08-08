@@ -201,7 +201,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         // Maze
         
         for(y=[0:1:h-1])
-        translate([0,0,mm+y*s+((!os&&(i2==0||tpp==2))?s:0)-m*2-s/6+((tpp<1&&i==0)?s:0)])
+        translate([0,0,mm+y*s+((!os&&(i2==0||tpp==2))?s:0)-m*2-s/6+((tpp<1&&i==1)?s:0)])
         for(x=[0:1:w-1])
         rotate([0,0,x*360/w])
         {
