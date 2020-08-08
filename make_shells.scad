@@ -201,7 +201,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         // Maze
         
         for(y=[0:1:h-1])
-        translate([0,0,mm+y*s+((!os&&(i2==0||tpp==2))?s:0)-m*2-s/6+((tpp<1&&i==1)?s:0)])
+        translate([0,0,mm+y*s+((!os&&(i2==0||tpp==2))?s:0)-m*2-s/6+((tpp<1&&i==0)?s:0)])
         for(x=[0:1:w-1])
         rotate([0,0,x*360/w])
         {
@@ -294,10 +294,13 @@ else
     }
     difference()
     {
+        //---------------------------- 
         translate([0,0,bh-0.01])
-        cylinder(d=id+iw*2+s-m*2,h=wt+ih-bh+eh+((!os&&(i==1||tpp==2))?s:0),$fn=100);
-	           translate([0,0,wt+m*2])
-           cylinder(d=id+m*2,h=ih+1+eh+((!os&&(i==1||tpp==2))?s:0),$fn=100);
+        //&&(i==1||tpp==2)
+        cylinder(d=id+iw*2+s-m*2,h=wt+ih-bh+eh+((!os)?s:0),$fn=100);
+	          
+        translate([0,0,wt+m*2])
+           cylinder(d=id+m*2,h=ih+1+eh+((!os)?s:0),$fn=100);
 	   
 	if(!is)
 	{
@@ -323,9 +326,10 @@ else
     }
     if((is && i==0 && tpp<1)||tpp==1)
 	   {
+           //--------------------
               for(a=[0:360/p:359])
               rotate([0,0,a])
-              translate([id/2+m,0,wt+ih-s/4*nubscale+eh+((!os&&(i==1||tpp==2))?s:0)])
+              translate([id/2+m,0,wt+ih-s/4*nubscale+eh+((!os)?s:0)])
               nub();
 	   }
        if(i==1 && tpp<2)
