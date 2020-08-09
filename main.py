@@ -391,8 +391,8 @@ def gen():
                 else:
                     #set the maze width
                     mw = int(math.ceil((d2 + us) * np.pi / us / p ))
-                #extra height for transition
-                if tpp==2:
+                #extra height for lid
+                if shell == shells:
                     mh += 1
                 #increase maze height
                 mh += 1
@@ -403,7 +403,7 @@ def gen():
             #set the maze width
             mw = int(math.ceil((d + us) * np.pi / us / p))
             #increase maze height
-            mh += 1
+            mh += 2
 
         # shift
         stag = np.zeros(mh)
