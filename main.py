@@ -90,7 +90,7 @@ def execscad(threadid=0):
     cmd.extend(
         [
             "-o",
-            os.path.join(os.getcwd(), STL_DIR, str(shell + 1) + "." + ext),
+            os.path.join(os.getcwd(), STL_DIR, name + "_" + str(shell + 1) + "." + ext),
             os.path.join(os.getcwd(), "make_shells.scad"),
         ]
     )
@@ -539,6 +539,7 @@ def readOpt():
     global difficulty
     global min_branch
     global ext
+    global name
     config = configparser.ConfigParser()
     config.read("opt.ini")
     if "DEFAULT" not in config or "MAZE" not in config:
