@@ -21,8 +21,8 @@ import re
 from PIL import Image
 import subprocess as sp
 
-skip = -1 # debug: skip all shells up to here (0 to n to enable)
-halt = -1 # debug: terminate skipping this shell (0 to n to enable)
+skip = 7 # debug: skip all shells up to here (0 to n to enable)
+halt = 8 # debug: terminate skipping this shell (0 to n to enable)
 
 
 
@@ -547,6 +547,7 @@ def readOpt():
         exit(1)
     mazeconfig=config["MAZE"]
     looksconfig=config["LOOKS"]
+    embossconfig=config["EMBOSS"]
     config = config["DEFAULT"]
     version = scad_version()
     if config.getboolean("o3mf") and version[0]>=2019:
@@ -585,7 +586,7 @@ def readOpt():
     stagconst = 0
     if stagmode == 3:
         stagconst = abs(mazeconfig.getint("twist",1))
-    #looks
+    #looks and emboss
     with open("options.scad", "w+") as opt:
         if looksconfig.getboolean("oldnubs",True):
             opt.write("oldnubs=1;\n")
@@ -601,6 +602,22 @@ def readOpt():
             opt.write("lefty=1;\n")
         else:
             opt.write("lefty=0;\n")
+        #emboss
+        if embossconfig.getboolean("ense",True):
+            opt.write("ense=1;\n")
+        else:
+            opt.write("ense=0;\n")
+        opt.write('se="'+embossconfig.get("se").replace('"','')+'";\n')
+        be=embossconfig.get("be").replace('"','')
+        if embossconfig.getboolean("enbe",True):
+            opt.write("enbe=1;\n")
+            shells=len(be)
+            if embossconfig.getboolean("emboss_inside_only",True):
+                shells+=2
+        else:
+            opt.write("enbe=0;\n")
+        opt.write('be="'+be+'";\n')
+        print(be)
     
 if __name__ == "__main__":
     
