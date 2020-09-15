@@ -463,6 +463,6 @@ module base_emboss(h=0.6)
     
     if(enbe && is<len(be))
     {
-        translate([0,0,-h])linear_extrude(h*2)text(be[is],size=s,font="Liberation Mono:style=Bold",halign="center",valign="center");
+        rotate([180,0,0])translate([0,0,-h])linear_extrude(h*2)text(be[is],size=s,font="Liberation Mono:style=Bold",halign="center",valign="center");
     }
 }
