@@ -2,4 +2,5 @@ maze_previews
 *_files
 maze.scad
 config.scad
+options.scad
 .vscode
