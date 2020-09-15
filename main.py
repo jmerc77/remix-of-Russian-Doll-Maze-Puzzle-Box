@@ -546,6 +546,7 @@ def readOpt():
         print("ERROR: No DEFAULT and/or MAZE section in opt.ini; Must have both.\n")
         exit(1)
     mazeconfig=config["MAZE"]
+    looksconfig=config["LOOKS"]
     config = config["DEFAULT"]
     version = scad_version()
     if config.getboolean("o3mf") and version[0]>=2019:
@@ -584,6 +585,22 @@ def readOpt():
     stagconst = 0
     if stagmode == 3:
         stagconst = abs(mazeconfig.getint("twist",1))
+    #looks
+    with open("options.scad", "w+") as opt:
+        if looksconfig.getboolean("oldnubs",True):
+            opt.write("oldnubs=1;\n")
+        else:
+            opt.write("oldnubs=0;\n")
+        bs=looksconfig.getint("bs",10);
+        if bs<3:
+            bs=3
+        opt.write("bs="+str(bs)+";\n")
+        bversion=abs(looksconfig.getint("bs",2))%3;
+        opt.write("bversion="+str(bversion)+";\n")
+        if looksconfig.getboolean("lefty",True):
+            opt.write("lefty=1;\n")
+        else:
+            opt.write("lefty=0;\n")
     
 if __name__ == "__main__":
     
