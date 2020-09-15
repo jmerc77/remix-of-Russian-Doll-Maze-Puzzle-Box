@@ -20,9 +20,17 @@ bh=s-eh2;	// Base height
 eh=(tpp<1&&i==0)?0:bh;// Extra height	
 wt=bh;	// Base wall thickness
 ih=(h1+1)*s;	// Inside height
-
+difference()
+{
 if(base)translate([lid?(id+s*4+iw*2+wt*2)/2:0,0,0])makebase();
-if(lid)translate([base?-(id+s*4+iw*2+wt*2)/2:0,0,0])makelid();
+if(lid)
+    difference()
+{
+    translate([base?-(id+s*4+iw*2+wt*2)/2:0,0,0])makelid();
+    side_emboss();
+}
+base_emboss();
+}
 module nub()
 {
     if(oldnubs){
@@ -437,4 +445,24 @@ mm=(ih-bh-s*h1)/2+s/2+eh;
             rotate([0,0,a])
             translate([id/2+iw+s/2,0,ih-bh+wt*2+eh+s/4-s/4/nubscale])nub();}
 
+}
+
+module side_emboss(h=0.6)
+{
+    s=min(bd*PI/bs-2,(h1*s-bh-2)/len(se)*8/6);
+    
+    if(ense)
+    {
+        rotate([0,0,180/bs])translate([-bd/2+h,0,bh+h])rotate([0,-90,0])linear_extrude(h*2)text(se,size=s,font="Liberation Mono:style=Bold",valign="center");
+    }
+}
+
+module base_emboss(h=0.6)
+{
+    s=id/2;
+    
+    if(enbe && is<len(be))
+    {
+        translate([0,0,-h])linear_extrude(h*2)text(be[is],size=s,font="Liberation Mono:style=Bold",halign="center",valign="center");
+    }
 }
