@@ -23,7 +23,6 @@ ih=(h1+1)*s;	// Inside height
 
 if(base)translate([lid?(id+s*4+iw*2+wt*2)/2:0,0,0])makebase();
 if(lid)translate([base?-(id+s*4+iw*2+wt*2)/2:0,0,0])makelid();
-
 module nub()
 {
     if(oldnubs){
@@ -43,7 +42,7 @@ module nub()
     translate([0,0,s/8])
     hull()
     {
-        translate([0,(s/6*nubscale)/2,0])cube([s/2*nubscale-m*2,s/3*nubscale,s/4],true);
+        translate([0,0,0])cube([s/2*nubscale-m*2,s/4*nubscale,s/4],true);
         translate([0,0,-s/4])
         cube([s/2*nubscale-m*2,s/2*nubscale,s/4],true);
     }
@@ -68,7 +67,7 @@ module knob()
     translate([0,0,s/8])
     hull()
     {
-        translate([0,(s/6*nubscale)/2,0])cube([s/2*nubscale,s/3*nubscale,s/4],true);
+        translate([0,0,0])cube([s/2*nubscale,s/4*nubscale,s/4],true);
         translate([0,0,-s/4])
         cube([s/2*nubscale,s/2*nubscale,s/4],true);
     }
