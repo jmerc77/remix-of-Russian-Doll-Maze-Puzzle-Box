@@ -596,7 +596,7 @@ def readOpt():
         if bs<3:
             bs=3
         opt.write("bs="+str(bs)+";\n")
-        bversion=abs(looksconfig.getint("bs",2))%3;
+        bversion=abs(looksconfig.getint("bversion",2))%3;
         opt.write("bversion="+str(bversion)+";\n")
         if looksconfig.getboolean("lefty",True):
             opt.write("lefty=1;\n")
@@ -650,3 +650,4 @@ if __name__ == "__main__":
     while not gen():
         continue
     print("done!")
+    
