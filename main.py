@@ -21,8 +21,8 @@ import re
 from PIL import Image
 import subprocess as sp
 
-skip = 7 # debug: skip all shells up to here (0 to n to enable)
-halt = 8 # debug: terminate skipping this shell (0 to n to enable)
+skip = -1 # debug: skip all shells up to here (0 to n to enable)
+halt = -1 # debug: terminate skipping this shell (0 to n to enable)
 
 
 
