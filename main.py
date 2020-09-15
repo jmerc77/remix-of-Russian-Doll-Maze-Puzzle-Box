@@ -617,7 +617,6 @@ def readOpt():
         else:
             opt.write("enbe=0;\n")
         opt.write('be="'+be+'";\n')
-        print(be)
     
 if __name__ == "__main__":
     
@@ -651,4 +650,3 @@ if __name__ == "__main__":
     while not gen():
         continue
     print("done!")
-    
