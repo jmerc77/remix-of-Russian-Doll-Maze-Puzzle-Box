@@ -217,7 +217,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         }
         }
         else if(is>0){
-                   translate([0,0,s])for(a=[0:360/p:359])
+                   translate([0,0,0])for(a=[0:360/p:359])
         rotate([0,0,a])
         {
             rotate([0,0,st*360/w])
@@ -239,7 +239,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         }
             // Maze
         for(y=[0:1:h-1])
-        translate([0,0,bh+mm+y*s+s-m*2])
+        translate([0,0,bh+mm+y*s-m*2])
         
         for(x=[0:1:w-1])
         rotate([0,0,x*360/w])
@@ -302,14 +302,14 @@ else
     difference()
     {
         translate([0,0,bh-0.01])
-        cylinder(d=id+iw*2+s-m*2,h=wt+ih-bh+eh+(((!os||i==1)&&tpp<2||tpp==2)?s:0),$fn=100);
+        cylinder(d=id+iw*2+s-m*2,h=wt+ih-bh+eh,$fn=100);
 	          
         translate([0,0,wt+m*2])
-           cylinder(d=id+m*2,h=ih+1+eh+(((!os||i==1)&&tpp<2||tpp==2)?s:0),$fn=100);
+           cylinder(d=id+m*2,h=ih+1+eh,$fn=100);
 	   
 	if(!is)
 	{
-           translate([0,0,wt+ih-id/2-1+eh+((i==1)?s:0)])
+           translate([0,0,wt+ih-id/2-1+eh])
            cylinder(d1=0,d2=id+m*2+6,h=id/2+2,$fn=100);
             
 	}
@@ -334,7 +334,7 @@ else
            //--------------------
               for(a=[0:360/p:359])
               rotate([0,0,a])
-              translate([id/2+m,0,wt+ih-s/4*nubscale+eh+((!os)?s:0)])
+              translate([id/2+m,0,wt+ih-s/4*nubscale+eh])
               nub();
 	   }
        if(i==1 && tpp<2)
@@ -343,7 +343,7 @@ else
             difference(){
              for(a=[0:360/p:359])
               rotate([0,0,a])
-              translate([id/2+iw+s/2-m,0,wt+ih-s/4*nubscale+eh+s])
+              translate([id/2+iw+s/2-m,0,wt+ih-s/4*nubscale+eh])
               rotate([0,0,180])nub();
              
              translate([0,0,wt+ih-id/2-1+eh+s])cylinder(d1=0,d2=id+m*2+6,h=id/2+2,$fn=100);
@@ -352,7 +352,7 @@ else
              {
                  for(a=[0:360/p:359])
               rotate([0,0,a])
-              translate([id/2+iw+s/2-m,0,wt+ih-s/4*nubscale+eh+((tpp!=1)?s:0)])
+              translate([id/2+iw+s/2-m,0,wt+ih-s/4*nubscale+eh])
               rotate([0,0,180])nub();
              }
              
