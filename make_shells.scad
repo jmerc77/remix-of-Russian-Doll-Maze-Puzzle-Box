@@ -14,9 +14,8 @@ include <config.scad>
 include <maze.scad>
 
 //computed 
-eh2=1;// Extra height
 nubscale=1.5;
-bh=s-eh2;	// Base height
+bh=s-1;	// Base height
 eh=(tpp<1&&i==0)?0:bh;// Extra height	
 wt=bh;	// Base wall thickness
 ih=(h1+1)*s;//+((i==1||tpp==2)?1:0))*s;	// Inside height
@@ -218,7 +217,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         }
         }
         else if(is>0){
-                   translate([0,0,s])for(a=[0:360/p:359])
+                   translate([0,0,s-0.5])for(a=[0:360/p:359])
         rotate([0,0,a])
         {
             rotate([0,0,st*360/w])
@@ -241,7 +240,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         }
             // Maze
         for(y=[0:1:h-1])
-        translate([0,0,bh+2.5*s+y*s-m*2])
+        translate([0,0,bh+2.5*s+y*s-0.5])
         
         for(x=[0:1:w-1])
         rotate([0,0,x*360/w])
