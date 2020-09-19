@@ -19,7 +19,7 @@ nubscale=1.5;
 bh=s-eh2;	// Base height
 eh=(tpp<1&&i==0)?0:bh;// Extra height	
 wt=bh;	// Base wall thickness
-ih=(h1+1)*s;	// Inside height
+ih=(h1+1)*s;//+((i==1||tpp==2)?1:0))*s;	// Inside height
 difference()
 {
 if(base)translate([lid?(id+s*4+iw*2+wt*2)/2:0,0,0])makebase();
@@ -185,8 +185,9 @@ module basemaze(maze,w,h,st,ex,mm,i2)
             ((id/2+iw+s/2)*2*PI/p/4));
             
                  if(os){
-                     for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2+iw+s/2,0,bh-b*bh/(360/p)+s/4+s/4/nubscale])rotate([(lefty?-knobr:knobr),0,0])knob();
-                    hull(){
+                     for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2+iw+s/2,0,bh-b*bh/(360/p)+s/6+s/4/nubscale])rotate([(lefty?-knobr:knobr),0,0])knob();
+                    
+                     hull(){
                         translate([id/2+iw+s/2,0,bh+m*2+s/3.5])knob();
                         translate([id/2+iw+s/2,0,bh+m*2+s])knob();}
                      }
@@ -200,7 +201,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
                      }
             
                  }
-             rotate([0,0,ex*360/w])translate([0,0,mm+s*(h-1)-s/8+((tpp<1&&i==0)?s:0)])
+             rotate([0,0,ex*360/w])translate([0,0,mm+s*(h-1)-s/8])
             up(i2,mm);
         }
         
@@ -208,7 +209,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         // Maze
         
         for(y=[0:1:h-1])
-        translate([0,0,mm+y*s+((!os&&(i2==0||tpp==2))?s:0)-m*2-s/6+((tpp<1&&i==0)?s:0)])
+        translate([0,0,2*s+y*s-m*2])
         for(x=[0:1:w-1])
         rotate([0,0,x*360/w])
         {
@@ -217,7 +218,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         }
         }
         else if(is>0){
-                   translate([0,0,0])for(a=[0:360/p:359])
+                   translate([0,0,s])for(a=[0:360/p:359])
         rotate([0,0,a])
         {
             rotate([0,0,st*360/w])
@@ -227,19 +228,20 @@ module basemaze(maze,w,h,st,ex,mm,i2)
                 knobr=-atan2(360/p/4*bh/(360/p),
             ((id-s/2)*PI/p/4));
                
-     hull()for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2,0,eh+bh-b*bh/(360/p)+s/4])rotate([0,0,180])rotate([(lefty?-knobr:knobr),0,0])knob();
-                     hull(){translate([id/2,0,bh+eh+s/2])rotate([0,0,180])knob();
-                         translate([id/2,0,bh+eh+s+s/4/nubscale])rotate([0,0,180])knob();    
+     hull()for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2,0,s+bh-b*bh/(360/p)-s/2])rotate([0,0,180])rotate([(lefty?-knobr:knobr),0,0])knob();
+         //enter
+                     hull(){translate([id/2,0,bh+s-s/4])rotate([0,0,180])knob();
+                         translate([id/2,0,bh+s+s/4])rotate([0,0,180])knob();    
                          }
                      }
-            
-      rotate([0,0,ex*360/w])translate([0,0,bh+mm+s*(h-1)-m*2])
-            up(i2,mm,d=id/2);
+                     //exit
+      rotate([0,0,ex*360/w])translate([0,0,bh+ih-s/4])
+            up(i2,s,d=id/2);
                 
         }
             // Maze
         for(y=[0:1:h-1])
-        translate([0,0,bh+mm+y*s-m*2])
+        translate([0,0,bh+2.5*s+y*s-m*2])
         
         for(x=[0:1:w-1])
         rotate([0,0,x*360/w])
@@ -373,14 +375,14 @@ else
             if(is)hull()
             {
                 
-                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h2*s])knob();
-                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h2*s])knob();
+                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+ih+eh])knob();
+                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+ih+eh])knob();
             }
         }
         else if(is && (tpp>-1 || i==0))hull()
             {
-                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+eh+h1*s+s+((!os&&(i==0))?s:0)])knob();
-                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+eh+h1*s+s+((!os&&(i==0))?s:0)])knob();
+                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+ih])knob();
+                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+ih])knob();
             }
         }
         if(os&&(-i==tpp||tpp==2))for(c=[0:1:1])
