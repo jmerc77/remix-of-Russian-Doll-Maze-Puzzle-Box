@@ -49,9 +49,9 @@ module nub()
     translate([0,0,s/8])
     hull()
     {
-        translate([0,0,0])cube([s/2*nubscale-m*2,s/4*nubscale,s/4],true);
+        translate([0,0,0])cube([s/2-m*2,s/4*nubscale,s/4],true);
         translate([0,0,-s/4])
-        cube([s/2*nubscale-m*2,s/2*nubscale,s/4],true);
+        cube([s/2-m*2,s/2*nubscale,s/4],true);
     }
 }
 }
@@ -74,9 +74,9 @@ module knob()
     translate([0,0,s/8])
     hull()
     {
-        translate([0,0,0])cube([s/2*nubscale,s/4*nubscale,s/4],true);
+        translate([0,0,0])cube([s/2,s/4*nubscale,s/4],true);
         translate([0,0,-s/4])
-        cube([s/2*nubscale,s/2*nubscale,s/4],true);
+        cube([s/2,s/2*nubscale,s/4],true);
     }
 }
 }
