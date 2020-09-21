@@ -335,7 +335,7 @@ else
            //--------------------
               for(a=[0:360/p:359])
               rotate([0,0,a])
-              translate([id/2+m,0,wt+ih-s/4*nubscale+eh])
+              translate([id/2,0,wt+ih-s/4*nubscale+eh])
               nub();
 	   }
        if(i==1 && tpp<2)
