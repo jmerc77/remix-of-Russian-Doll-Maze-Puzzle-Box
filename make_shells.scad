@@ -291,7 +291,7 @@ else
 }
 }
 	else
-        translate([0,0,-eh])outer(bh+wt);
+        translate([0,0,-eh*2])outer(bh+wt);
 	
 	if(os && bversion==0)
 	{
