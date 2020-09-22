@@ -1,6 +1,4 @@
 maze_previews
 *_files
-maze.scad
-config.scad
-options.scad
+shell_data.scad
 .vscode
