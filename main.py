@@ -566,9 +566,7 @@ def readOpt():
     shells = config.getint("levels") + 1
     marge = config.getfloat("tolerance")
     i = int(config.getboolean("maze_inside"))
-    tp = config.getint("transition_shell")
-    if tp > shells-2 or tp == 0:
-        tp = -1
+    
     us = config.getfloat("spacing")
     mh = config.getint("units_tall")
     mw = config.getint("units_wide")
@@ -629,6 +627,10 @@ def readOpt():
     else:
         opt+="enbe=0;\n"
     opt+='be="'+be+'";\n'
+
+    tp = config.getint("transition_shell")
+    if tp > shells-1 or tp < 2:
+        tp = -1
     
 if __name__ == "__main__":
     
