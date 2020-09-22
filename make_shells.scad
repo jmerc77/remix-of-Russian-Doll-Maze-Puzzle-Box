@@ -9,16 +9,14 @@
 //do not change below here.
 //(Unless you know what you are doing!)
 //Works so far.
-include <options.scad>
-include <config.scad>
-include <maze.scad>
+include <shell_data.scad>
 
 //computed 
-nubscale=1.5;
+nubscale=1.5+0;
 bh=s-1;	// Base height
 eh=(tpp<1&&i==0)?0:bh;// Extra height	
 wt=bh;	// Base wall thickness
-ih=(h1+1)*s;//+((i==1||tpp==2)?1:0))*s;	// Inside height
+ih=(h1+1+((os == 0 && i == 0)?1:0))*s;
 difference()
 {
 if(base)translate([lid?(id+s*4+iw*2+wt*2)/2:0,0,0])makebase();
@@ -173,7 +171,8 @@ module basemaze(maze,w,h,st,ex,mm,i2)
     rotate([0,0,-st*360/w])
     {
     if(i2==0){ 
-                for(a=[0:360/p:359])
+                
+                    for(a=[0:360/p:359])
         rotate([0,0,a])
         {
             
@@ -193,7 +192,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
                      else
                      {
                          hull(){
-                             translate([id/2+iw+s/2,0,bh-s/2+s])knob();
+                             translate([id/2+iw+s/2,0,bh-s/2])knob();
                              translate([id/2+iw+s/2,0,bh+s*2.25])knob();
                              
                          }
@@ -318,7 +317,8 @@ else
     if(tpp<1 || tpp==2)
     {
         
-        if(tpp==2)
+        translate([0,0,((os == 0 && i == 0)?s:0)]){
+            if(tpp==2)
         {
             basemaze(maze1,w1,h1,st1,ex1,mm,1);
             basemaze(maze2,w2,h2,st2,ex2,mm,0);
@@ -327,8 +327,8 @@ else
         {
             basemaze(maze1,w1,h1,st1,ex1,mm,i);
         }
+}
     }
-    
     }
     if((is && i==0 && tpp<1)||tpp==1)
 	   {
