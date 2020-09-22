@@ -381,6 +381,8 @@ def gen():
                 if shell+1 == tp:
                     #keep the diameter the same
                     d = d2
+                elif (shell+1 == shells and shells==2):
+                    d = d2 + us / 2 + wt + marge * 2
                 else:
                     #set the diameter
                     d = d2 + us + wt + marge * 2
@@ -565,8 +567,8 @@ def readOpt():
     marge = config.getfloat("tolerance")
     i = int(config.getboolean("maze_inside"))
     tp = config.getint("transition_shell")
-    if tp > shells-1:
-        tp = 0
+    if tp > shells-2 or tp == 0:
+        tp = -1
     us = config.getfloat("spacing")
     mh = config.getint("units_tall")
     mw = config.getint("units_wide")
@@ -620,6 +622,10 @@ def readOpt():
         shells=len(be)
         if embossconfig.getboolean("emboss_inside_only",True):
             shells+=2
+        if shells==0:
+            shells+=2
+        if shells==1:
+            shells+=1
     else:
         opt+="enbe=0;\n"
     opt+='be="'+be+'";\n'
