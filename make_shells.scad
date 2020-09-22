@@ -193,7 +193,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
                      {
                          hull(){
                              translate([id/2+iw+s/2,0,bh-s/2])knob();
-                             translate([id/2+iw+s/2,0,bh+s*2.25])knob();
+                             translate([id/2+iw+s/2,0,bh+s])knob();
                              
                          }
                      }
@@ -255,6 +255,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
 module makebase()
 {
     mm=(ih+wt-bh-s*h1)/2+s/2+m*2+eh+1;
+    translate([0,0,eh*((i==0)?2:1)*((!os)?1:0)]){
     difference()
     {
     translate([0,0,(os)?0:eh])union(){
@@ -395,6 +396,7 @@ else
             }
         }
     }
+  }
   }
 }
 
