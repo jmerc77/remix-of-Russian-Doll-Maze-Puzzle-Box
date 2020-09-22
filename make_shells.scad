@@ -452,7 +452,7 @@ mm=(ih-bh-s*h1)/2+s/2+eh;
 
 module side_emboss(h=0.6)
 {
-    s=min(bd*PI/bs-2,(h1*s-bh-2)/len(se)*8/6);
+    s=min(bd*PI/bs-2,(h1*s-bh-s-2)/len(se)*8/6);
     
     if(ense)
     {
