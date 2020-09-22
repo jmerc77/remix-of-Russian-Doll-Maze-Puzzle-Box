@@ -199,8 +199,8 @@ module basemaze(maze,w,h,st,ex,mm,i2)
                      }
             
                  }
-             rotate([0,0,ex*360/w])translate([0,0,mm+s*(h-1)-s/8])
-            up(i2,mm);
+             rotate([0,0,ex*360/w])translate([0,0,2*s+s*(h-1)-s/8])
+            up(i2,2*s);
         }
         
         
@@ -290,7 +290,7 @@ else
 }
 }
 	else
-        translate([0,0,-eh*2])outer(bh+wt);
+        translate([0,0,-eh*((i==0)?2:1)])outer(bh+wt);
 	
 	if(os && bversion==0)
 	{
@@ -317,7 +317,7 @@ else
     if(tpp<1 || tpp==2)
     {
         
-        translate([0,0,((os == 0 && i == 0)?s:0)]){
+        translate([0,0,((os == 0 && i == 0)?bh:0)]){
             if(tpp==2)
         {
             basemaze(maze1,w1,h1,st1,ex1,mm,1);
@@ -404,7 +404,7 @@ mm=(ih-bh-s*h1)/2+s/2+eh;
 
     difference()
     {
-        outer(ih-bh+wt*2+eh+s/2);
+        outer(ih-bh+wt*2+eh-s/2);
         
 	    hull()
 	    {
@@ -425,12 +425,12 @@ mm=(ih-bh-s*h1)/2+s/2+eh;
             rotate([0,0,st1*360/w1])
             {
                 
-                translate([0,0,bh+eh+s])up(i,s);
+                translate([0,0,bh+eh])up(i,s);
             }
-            rotate([0,0,ex1*360/w1])translate([0,0,eh/2+bh+mm*1.75+s*(h1-1)])up(i,mm/3);
+            rotate([0,0,ex1*360/w1])translate([0,0,eh/2+bh+mm*1.75+s*(h1-2)])up(i,mm/3);
         }
             // Maze
-        for(y=[0:1:h1-1])        translate([0,0,eh+bh+mm+y*s+m+s/2])        
+        for(y=[0:1:h1-1])        translate([0,0,eh+bh+mm+y*s+m-s/2])        
             for(x=[0:1:w1-1])        rotate([0,0,x*360/w1])
         {
             if(maze1[y][x]==1 || maze1[y][x]==3)               right(w1,i);
@@ -444,7 +444,7 @@ mm=(ih-bh-s*h1)/2+s/2+eh;
     if(i==0){
             for(a=[0:360/p:359])
             rotate([0,0,a])
-            translate([id/2+iw+s/2,0,ih-bh+wt*2+eh+s/4-s/4/nubscale])nub();}
+            translate([id/2+iw+s/2,0,ih-bh+wt*2+eh+s/4-s/4/nubscale-s+m])nub();}
 
 }
 
