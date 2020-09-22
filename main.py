@@ -354,6 +354,7 @@ def gen():
     global mw
     global i
     global tpp
+    global maze_data
     #are we done yet?
     if shell < shells:
         
@@ -394,7 +395,7 @@ def gen():
                 #extra height for lid
                 if shell == shells:
                     mh += 1
-                #increase maze height
+            #increase maze height
             mh += 1
         else:
             #set the diameter
@@ -452,19 +453,22 @@ def gen():
         #write the maze
         if tpp < 1:
             maze_num = 1
-            open_mode = "w"
-        else:
-            maze_num = 2
-            open_mode = "a+"
-        with open("maze.scad", open_mode) as maze:
-            maze.write(
-                "\n".join(["maze"+str(maze_num)+"="+s,
+            maze_data="\n".join(["maze"+str(maze_num)+"="+s,
                   "h"+str(maze_num)+"="+str(mh)+";",
                   "w"+str(maze_num)+"="+str(mw*p)+";",
                   "st"+str(maze_num)+"="+str(st)+";",
                   "ex"+str(maze_num)+"="+str(ex)+";",
                   ""])
-            )
+        else:
+            maze_num = 2
+            maze_data+="\n".join(["maze"+str(maze_num)+"="+s,
+                  "h"+str(maze_num)+"="+str(mh)+";",
+                  "w"+str(maze_num)+"="+str(mw*p)+";",
+                  "st"+str(maze_num)+"="+str(st)+";",
+                  "ex"+str(maze_num)+"="+str(ex)+";",
+                  ""])
+        
+            
         #non lid
         base = 1
         lid = 0
@@ -474,13 +478,10 @@ def gen():
             lid = 1
             base = 0
             #no more to go
-            mos = 0
-        else:
-            #how many are left to go
-            mos = shells - shell - 2
-        with open("config.scad", "w+") as cfg:
-            cfg.write(
-                "\n".join(["p="+str(p)+";",
+        #how many are left to go
+        mos = shells - shell - 2
+        with open("shell_data.scad", "w") as shell_data:
+            shell_data.write(opt+"\n".join(["p="+str(p)+";",
                   "tpp="+str(tpp)+";",
                   "is="+str(shell)+";",
                   "os="+str(mos)+";",
@@ -492,7 +493,7 @@ def gen():
                   "i="+str(i)+";",
                   "bd="+str(d + wt * 2 + us * 2)+";",
                   "m="+str(marge)+";",
-                  ""])
+                  ""])+maze_data
             )
         #save diameter of this one for later
         if shell < shells - 2:
@@ -540,6 +541,7 @@ def readOpt():
     global min_branch
     global ext
     global name
+    global opt
     config = configparser.ConfigParser()
     config.read("opt.ini")
     if "DEFAULT" not in config or "MAZE" not in config:
@@ -586,41 +588,42 @@ def readOpt():
     stagconst = 0
     if stagmode == 3:
         stagconst = abs(mazeconfig.getint("twist",1))
-    #looks and emboss
-    with open("options.scad", "w+") as opt:
-        if looksconfig.getboolean("oldnubs",True):
-            opt.write("oldnubs=1;\n")
-        else:
-            opt.write("oldnubs=0;\n")
-        bs=looksconfig.getint("bs",10);
-        if bs<3:
-            bs=3
-        opt.write("bs="+str(bs)+";\n")
-        bversion=abs(looksconfig.getint("bversion",2))%3;
-        opt.write("bversion="+str(bversion)+";\n")
-        if looksconfig.getboolean("lefty",True):
-            opt.write("lefty=1;\n")
-        else:
-            opt.write("lefty=0;\n")
-        #emboss
-        if embossconfig.getboolean("ense",True):
-            opt.write("ense=1;\n")
-        else:
-            opt.write("ense=0;\n")
-        opt.write('se="'+embossconfig.get("se").replace('"','')+'";\n')
-        be=embossconfig.get("be").replace('"','')
-        if embossconfig.getboolean("enbe",True):
-            opt.write("enbe=1;\n")
-            shells=len(be)
-            if embossconfig.getboolean("emboss_inside_only",True):
-                shells+=2
-        else:
-            opt.write("enbe=0;\n")
-        opt.write('be="'+be+'";\n')
+    #options
+    opt=""
+    if looksconfig.getboolean("oldnubs",True):
+        opt+="oldnubs=1;\n"
+    else:
+        opt+="oldnubs=0;\n"
+    bs=looksconfig.getint("bs",10)
+    if bs<3:
+        bs=3
+    opt+="bs="+str(bs)+";\n"
+    bversion=abs(looksconfig.getint("bversion",2))%3
+    opt+="bversion="+str(bversion)+";\n"
+    if looksconfig.getboolean("lefty",True):
+        opt+="lefty=1;\n"
+    else:
+        opt+="lefty=0;\n"
+    #emboss
+    if embossconfig.getboolean("ense",True):
+        opt+="ense=1;\n"
+    else:
+        opt+="ense=0;\n"
+    opt+='se="'+embossconfig.get("se").replace('"','')+'";\n'
+    be=embossconfig.get("be").replace('"','')
+    if embossconfig.getboolean("enbe",True):
+        opt+="enbe=1;\n"
+        shells=len(be)
+        if embossconfig.getboolean("emboss_inside_only",True):
+            shells+=2
+    else:
+        opt+="enbe=0;\n"
+    opt+='be="'+be+'";\n'
     
 if __name__ == "__main__":
     
     #read opt.ini
+    opt=""
     readOpt()
     try:
         #prep folders
