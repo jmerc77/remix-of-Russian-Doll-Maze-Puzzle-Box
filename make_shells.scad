@@ -307,7 +307,7 @@ else
         translate([0,0,bh-0.01])
         cylinder(d=id+iw*2+s*td-m*2,h=wt+ih-bh+eh,$fn=100);
 	          
-        translate([0,0,wt+m*2])
+        translate([0,0,wt])
            cylinder(d=id+m*2,h=ih+1+eh,$fn=100);
 	   
 	if(!is)
