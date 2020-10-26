@@ -46,3 +46,6 @@ Make sure to install the python libs!
 - Editing during the run may not be possible.
 - Openscad scripts run via shell in the python code. This speeds the process of stl export as this limits having to switch between apps.
 - To make another or to adjust values, you will need to restart from step 2 as some parts may no longer fit.
+- Calculating compartment size:
+	Diameter = (units_wide * spacing * nubs) / PI / 2 - wall_thickness - 2 * tolerance
+	Height = spacing * (units_tall + 1)
