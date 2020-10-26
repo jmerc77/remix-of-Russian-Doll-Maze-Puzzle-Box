@@ -33,23 +33,22 @@ module nub()
     if(oldnubs){
       rotate([0,0,-90])
     rotate([90,0,0])
-    translate([0,0,s/8]) 
-    hull()
+        translate([0,0,s*td/8])hull()
     {
-        cube([s/6*nubscale,s/6*nubscale,s/4],true);
-        translate([0,0,-s/4])
-        cube([s/2*nubscale,s/2*nubscale,s/4],true);
+        cube([s/6*nubscale-m*2,s/6*nubscale-m*2,s*td/4],true);
+        translate([0,0,-s*td/8-s/8])
+        cube([s/2*nubscale-m*2,s/2*nubscale-m*2,s/4],true);
     }  
     }
     else{
     rotate([0,0,-90])
     rotate([90,0,0])
-    translate([0,0,s/8])
+    translate([0,0,s*td/8])
     hull()
     {
-        translate([0,0,0])cube([s/2-m*2,s/4*nubscale,s/4],true);
-        translate([0,0,-s/4])
-        cube([s/2-m*2,s/2*nubscale,s/4],true);
+        translate([0,0,0])cube([s/2-m*2,s/4*nubscale-m*2,s*td/4],true);
+        translate([0,0,-s*td/8-s/8])
+        cube([s/2-m*2,s/2*nubscale-m*2,s/4],true);
     }
 }
 }
@@ -58,28 +57,28 @@ module knob()
     if(oldnubs){
        rotate([0,0,-90])
     rotate([90,0,0])
-    translate([0,0,s/8])
+    translate([0,0,s*td/8])
     hull()
     {
-        cube([s/6*nubscale,s/6*nubscale,s/4],true);
-        translate([0,0,-s/4])
+        cube([s/6*nubscale,s/6*nubscale,s*td/4],true);
+        translate([0,0,-s*td/8-s/8])
         cube([s/2*nubscale,s/2*nubscale,s/4],true);
     }
     }
     else{
     rotate([0,0,-90])
     rotate([90,0,0])
-    translate([0,0,s/8])
+    translate([0,0,s*td/8])
     hull()
     {
-        translate([0,0,0])cube([s/2,s/4*nubscale,s/4],true);
-        translate([0,0,-s/4])
+        translate([0,0,0])cube([s/2,s/4*nubscale,s*td/4],true);
+        translate([0,0,-s*td/8-s/8])
         cube([s/2,s/2*nubscale,s/4],true);
     }
 }
 }
 
-module right(w,i2,d=id/2+iw+s/2)
+module right(w,i2,d=id/2+iw+s*td/2)
 {
     q=3.6;
     
@@ -102,7 +101,7 @@ module right(w,i2,d=id/2+iw+s/2)
 }
 }
 
-module up(i2,q,d=id/2+iw+s/2,stp=3)
+module up(i2,q,d=id/2+iw+s*td/2,stp=3)
 {
     for(a=[q/stp:q/stp:q]){
     if(i2==1){
@@ -179,21 +178,22 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         rotate([0,0,st*360/w]){  
                 
                 //lock
-            knobr=atan2(360/p/4*bh/(360/p),
-            ((id/2+iw+s/2)*2*PI/p/4));
+            //knobr=atan2(360/p/4*bh/(360/p),((id/2+iw+s/2)*2*PI/p/4));
             
                  if(os){
-                     for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2+iw+s/2,0,bh-b*bh/(360/p)+s/6+s/4/nubscale])rotate([(lefty?-knobr:knobr),0,0])knob();
+                     //for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2+iw+s*td/2,0,bh-b*bh/(360/p)+s/6+s/4/nubscale])rotate([(lefty?-knobr:knobr),0,0])knob();
+                     
+                     for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2+iw+s*td/2+b*m/(360/p/4),0,bh+s/6+s/4/nubscale])knob();
                     
                      hull(){
-                        translate([id/2+iw+s/2,0,bh+m*2+s/3.5])knob();
-                        translate([id/2+iw+s/2,0,bh+m*2+s])knob();}
+                        translate([id/2+iw+s*td/2,0,bh+m*2+s/3.5])knob();
+                        translate([id/2+iw+s*td/2,0,bh+m*2+s])knob();}
                      }
                      else
                      {
                          hull(){
-                             translate([id/2+iw+s/2,0,bh-s/2])knob();
-                             translate([id/2+iw+s/2,0,bh+s])knob();
+                             translate([id/2+iw+s*td/2,0,bh-s/2])knob();
+                             translate([id/2+iw+s*td/2,0,bh+s])knob();
                              
                          }
                      }
@@ -223,10 +223,12 @@ module basemaze(maze,w,h,st,ex,mm,i2)
            { 
                 
                 //lock
-                knobr=-atan2(360/p/4*bh/(360/p),
-            ((id-s/2)*PI/p/4));
+                //knobr=-atan2(360/p/4*bh/(360/p),((id-s/2)*PI/p/4));
                
-     hull()for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2,0,s+bh-b*bh/(360/p)-s/2])rotate([0,0,180])rotate([(lefty?-knobr:knobr),0,0])knob();
+     //for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2,0,s+bh-b*bh/(360/p)-s/2])rotate([0,0,180])rotate([(lefty?-knobr:knobr),0,0])knob();
+               for(b=[0:180/p/4/w:360/p/4])rotate([0,0,(lefty?b:-b)])translate([id/2-b*m/(360/p/4),0,s+bh-s/2])rotate([0,0,180])knob();
+               
+               
          //enter
                      hull(){translate([id/2,0,bh+s-s/4])rotate([0,0,180])knob();
                          translate([id/2,0,bh+s+s/4])rotate([0,0,180])knob();    
@@ -267,12 +269,12 @@ module makebase()
             {
 	difference()
 	{
-   	   cylinder(d=bd+s/4-m*2,h=bh,$fn=100);
+   	   cylinder(d=bd+s*td/4-m*2,h=bh,$fn=100);
 	   translate([0,0,-0.01])
 	   difference()
 	   {
-		   cylinder(d=bd+s/4+2-m*2,h=2);
-		   cylinder(d1=bd+s/4-2-m*2,d2=bd+s/4+4-m*2,h=3,$fn=100);
+		   cylinder(d=bd+s*td/4+2-m*2,h=s/2);
+		   cylinder(d1=bd+s*td/4-2-m*2,d2=bd+s*td/4+4-m*2,h=s/2,$fn=100);
 	   }
 	}
 }
@@ -303,7 +305,7 @@ else
     difference()
     {
         translate([0,0,bh-0.01])
-        cylinder(d=id+iw*2+s-m*2,h=wt+ih-bh+eh,$fn=100);
+        cylinder(d=id+iw*2+s*td-m*2,h=wt+ih-bh+eh,$fn=100);
 	          
         translate([0,0,wt+m*2])
            cylinder(d=id+m*2,h=ih+1+eh,$fn=100);
@@ -318,7 +320,7 @@ else
     if(tpp<1 || tpp==2)
     {
         
-        translate([0,0,((os == 0 && i == 0)?bh:0)]){
+        translate([0,0,((os == 0 && i == 0)?s/2:0)]){
             if(tpp==2)
         {
             basemaze(maze1,w1,h1,st1,ex1,mm,1);
@@ -333,7 +335,6 @@ else
     }
     if((is && i==0 && tpp<1)||tpp==1)
 	   {
-           //--------------------
               for(a=[0:360/p:359])
               rotate([0,0,a])
               translate([id/2,0,wt+ih-s/4*nubscale+eh])
@@ -345,7 +346,7 @@ else
             difference(){
              for(a=[0:360/p:359])
               rotate([0,0,a])
-              translate([id/2+iw+s/2-m,0,wt+ih-s/4*nubscale+eh])
+              translate([id/2+iw+s*td/2-m,0,wt+ih-s/4*nubscale+eh])
               rotate([0,0,180])nub();
              
              translate([0,0,wt+ih-id/2-1+eh+s])cylinder(d1=0,d2=id+m*2+6,h=id/2+2,$fn=100);
@@ -354,7 +355,7 @@ else
              {
                  for(a=[0:360/p:359])
               rotate([0,0,a])
-              translate([id/2+iw+s/2-m,0,wt+ih-s/4*nubscale+eh])
+              translate([id/2+iw+s*td/2-m,0,wt+ih-s/4*nubscale+eh])
               rotate([0,0,180])nub();
              }
              
@@ -367,22 +368,22 @@ else
         {
             if(os&&(-i==tpp||tpp==2))hull()
             {
-                rotate([0,0,c])translate([(bd+s/4-m*2)/2,0,bh])knob();
-                rotate([0,0,c+3.6])translate([(bd+s/4-m*2)/2,0,bh])knob();
+                rotate([0,0,c])translate([(bd+s*td/4-m*2)/2,0,bh])knob();
+                rotate([0,0,c+3.6])translate([(bd+s*td/4-m*2)/2,0,bh])knob();
             }
          if(tpp==2)
          {
             if(is)hull()
             {
                 
-                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+ih+eh])knob();
-                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+ih+eh])knob();
+                rotate([0,0,c])translate([id/2+s*td/2+iw,0,bh+ih+eh])knob();
+                rotate([0,0,c+3.6])translate([id/2+s*td/2+iw,0,bh+ih+eh])knob();
             }
         }
         else if(is && (tpp>-1 || i==0))hull()
             {
-                rotate([0,0,c])translate([id/2+s/2+iw,0,bh+ih])knob();
-                rotate([0,0,c+3.6])translate([id/2+s/2+iw,0,bh+ih])knob();
+                rotate([0,0,c])translate([id/2+s*td/2+iw,0,bh+ih])knob();
+                rotate([0,0,c+3.6])translate([id/2+s*td/2+iw,0,bh+ih])knob();
             }
         }
         if(os&&(-i==tpp||tpp==2))for(c=[0:1:1])
@@ -390,8 +391,8 @@ else
             hull()
             {
                 rotate([0,0,180*c]){
-                  translate([(bd+s/4-m*2)/2,0,bh])knob();
-                    translate([(bd+s/4-m*2)/2,0,0])knob();
+                  translate([(bd+s*td/4-m*2)/2,0,bh])knob();
+                    translate([(bd+s*td/4-m*2)/2,0,0])knob();
                 }
             }
         }
@@ -411,9 +412,9 @@ mm=(ih-bh-s*h1)/2+s/2+eh;
 	    hull()
 	    {
                translate([0,0,wt-1])
-               cylinder(d=id+s+iw*2+m-2,h=ih+eh+s/2,$fn=100);
+               cylinder(d=id+s*td+iw*2+m-2,h=ih+eh+s/2,$fn=100);
                translate([0,0,wt])
-               cylinder(d=id+s+iw*1.5+m*2,h=ih+eh+s/2+0.01,$fn=100);
+               cylinder(d=id+s*td+iw*1.5+m*2,h=ih+eh+s/2+0.01,$fn=100);
 	    }
             
         
@@ -446,26 +447,26 @@ mm=(ih-bh-s*h1)/2+s/2+eh;
     if(i==0){
             for(a=[0:360/p:359])
             rotate([0,0,a])
-            translate([id/2+iw+s/2,0,ih-bh+wt*2+eh+s/4-s/4/nubscale-s+m])nub();}
+            translate([id/2+iw+s*td/2,0,ih-bh+wt*2+eh+s/4-s/4/nubscale-s+m/2])nub();}
 
 }
 
 module side_emboss(h=0.6)
 {
-    s=min(bd*PI/bs-2,(h1*s-bh-s-2)/len(se)*8/6);
+    sze=min(bd*PI/bs-2,(h1*s-bh-s-2)/len(se)*8/6);
     
     if(ense)
     {
-        rotate([0,0,180/bs])translate([-bd/2+h,0,bh+h])rotate([0,-90,0])linear_extrude(h*2)text(se,size=s,font="Liberation Mono:style=Bold",valign="center");
+        rotate([0,0,180/bs])translate([-bd/2+h,0,bh+h])rotate([0,-90,0])linear_extrude(h*2)text(se,size=sze,font="Liberation Mono:style=Bold",valign="center");
     }
 }
 
 module base_emboss(h=0.6)
 {
-    s=id/2;
+    sze=id/2;
     
     if(enbe && is<len(be))
     {
-        rotate([180,0,0])translate([0,0,-h])linear_extrude(h*2)text(be[is],size=s,font="Liberation Mono:style=Bold",halign="center",valign="center");
+        rotate([180,0,0])translate([0,0,-h])linear_extrude(h*2)text(be[is],size=sze,font="Liberation Mono:style=Bold",halign="center",valign="center");
     }
 }

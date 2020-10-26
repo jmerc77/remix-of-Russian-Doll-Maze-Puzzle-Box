@@ -382,10 +382,10 @@ def gen():
                     #keep the diameter the same
                     d = d2
                 elif (shell+1 == shells and shells==2):
-                    d = d2 + us / 2 + wt + marge * 2
+                    d = d2 + us * td / 2 + wt + marge * 2
                 else:
                     #set the diameter
-                    d = d2 + us + wt + marge * 2
+                    d = d2 + us * td + wt + marge * 2
                     print("diameter:",d)
                 #is the maze on the outside?
                 if i == 0:
@@ -403,7 +403,7 @@ def gen():
                 mh += 1
         else:
             #set the diameter
-            d = d2 + us + wt + marge * 2
+            d = d2 + us * td + wt + marge * 2
             print("diameter:",d)
             #set the maze width
             mw = int(math.ceil((d + us) * np.pi / us / p))
@@ -496,8 +496,9 @@ def gen():
                   "iw="+str(wt)+";",
                   "id="+str(d)+";",
                   "s="+str(us)+";",
+                  "td="+str(td)+";",
                   "i="+str(i)+";",
-                  "bd="+str(d + wt * 2 + us * 2)+";",
+                  "bd="+str(d + wt * 2 + us * td * 2)+";",
                   "m="+str(marge)+";",
                   ""])+maze_data
             )
@@ -548,6 +549,7 @@ def readOpt():
     global ext
     global name
     global opt
+    global td
     config = configparser.ConfigParser()
     config.read("opt.ini")
     if "DEFAULT" not in config or "MAZE" not in config:
@@ -568,6 +570,11 @@ def readOpt():
     i = int(config.getboolean("maze_inside"))
     
     us = config.getfloat("spacing")
+    td = config.getfloat("td")
+    if td<1.0:
+        td=1.0
+    if td>2.0:
+        td=2.0
     mh = config.getint("units_tall")
     mw = config.getint("units_wide")
     mwt = config.getfloat("wall_thickness")
