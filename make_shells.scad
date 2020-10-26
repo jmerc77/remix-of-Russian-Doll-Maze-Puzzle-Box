@@ -302,7 +302,8 @@ else
 	   up(0,bh+eh,bd/2-m,stp=1);
 	}
     }
-    difference()
+    
+    translate([0,0,((tpp==2 && os==0)?-s:0)])difference()
     {
         translate([0,0,bh-0.01])
         cylinder(d=id+iw*2+s*td-m*2,h=wt+ih-bh+eh,$fn=100);
