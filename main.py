@@ -362,7 +362,7 @@ def gen():
         if shell >= halt and halt > -1:
             return True
         #is the next shell the transition?
-        if shell + 1 > 0 and shell + 1 < shells and shell + 2 == tp and tpp < 1:
+        if shell + 1 < shells and shell + 1 == tp and tpp < 1:
             tpp = -1
         #part status
         if tpp < 1:
@@ -378,7 +378,7 @@ def gen():
                 print("diameter:",d)
             else:
                 #are we transitioning?
-                if shell+1 == tp:
+                if shell == tp:
                     #keep the diameter the same
                     d = d2
                 elif (shell+1 == shells and shells==2):
@@ -506,7 +506,7 @@ def gen():
         if shell < shells - 2:
             d2 = d
         #was this the transition shell?
-        if shell > 0 and shell < shells and shell+1 == tp and tpp < 1:
+        if shell > 0 and shell < shells-1 and shell == tp and tpp < 1:
             #get ready for transition stage 2
             if i == 0:  # double nub transition
                 tpp = 1
@@ -628,15 +628,17 @@ def readOpt():
         if embossconfig.getboolean("emboss_inside_only",True):
             shells+=2
         if shells==0:
-            shells+=2
+            shells+=3
         if shells==1:
+            shells+=2
+        if shells==2:
             shells+=1
     else:
         opt+="enbe=0;\n"
     opt+='be="'+be+'";\n'
 
     tp = config.getint("transition_shell")
-    if tp > shells-1 or tp < 2:
+    if tp > shells-1 or tp < 1:
         tp = -1
     
 if __name__ == "__main__":
