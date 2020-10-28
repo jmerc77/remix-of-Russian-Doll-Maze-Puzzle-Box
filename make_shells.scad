@@ -235,7 +235,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
                          }
                      }
                      //exit
-      rotate([0,0,ex*360/w])translate([0,0,bh+ih-s/4])
+      rotate([0,0,ex*360/w])translate([0,0,((tpp==2 && os==0)?-s:0)+bh+ih-s/4])
             up(i2,s,d=id/2);
                 
         }
@@ -387,11 +387,11 @@ else
                 rotate([0,0,c+3.6])translate([id/2+s*td/2+iw,0,bh+ih])knob();
             }
         }
-        if(os&&(-i==tpp||tpp==2))for(c=[0:1:1])
+        if(os&&(-i==tpp||tpp==2))for(c=[0:1:p-1])
         {
             hull()
             {
-                rotate([0,0,180*c]){
+                rotate([0,0,360/p*c]){
                   translate([(bd+s*td/4-m*2)/2,0,bh])knob();
                     translate([(bd+s*td/4-m*2)/2,0,0])knob();
                 }
