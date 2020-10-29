@@ -394,13 +394,14 @@ def gen():
                 else:
                     #set the maze width
                     mw = int(math.ceil((d + us) * np.pi / us / p ))
+                #fix for tpp=1 (maze outside to inside)
+                if (shell!=tp or i==1):
+                    #increase maze height
+                    mh += 1
             #extra height for lid
             if shell+1==shells:
                 mh += 1
-            #fix for tpp=1 (maze outside to inside)
-            if (shell!=tp or i==1):
-                #increase maze height
-                mh += 1
+            
         else:
             #set the diameter
             d = d2 + us * td + wt + marge * 2
