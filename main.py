@@ -629,10 +629,8 @@ def readOpt():
         if embossconfig.getboolean("emboss_inside_only",True):
             shells+=2
         if shells==0:
-            shells+=3
-        if shells==1:
             shells+=2
-        if shells==2:
+        if shells==1:
             shells+=1
     else:
         opt+="enbe=0;\n"
