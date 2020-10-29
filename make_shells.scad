@@ -258,7 +258,7 @@ module makebase()
 {
     mm=(ih+wt-bh-s*h1)/2+s/2+m*2+eh+1;
     
-    difference()
+    translate([0,0,((os==0 && tpp==2)?bh:0)])difference()
     {
     translate([0,0,(os)?0:eh])union(){
     difference()
@@ -321,7 +321,7 @@ else
     if(tpp<1 || tpp==2)
     {
         
-        translate([0,0,((os == 0 && i == 0)?s/2:0)]){
+        translate([0,0,((os == 0 && i == 0)?s/2:0)-1]){
             if(tpp==2)
         {
             basemaze(maze1,w1,h1,st1,ex1,mm,1);

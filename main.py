@@ -398,7 +398,7 @@ def gen():
             if shell+1==shells:
                 mh += 1
             #fix for tpp=1 (maze outside to inside)
-            if (shell+1!=tp or i==1):
+            if (shell!=tp or i==1):
                 #increase maze height
                 mh += 1
         else:
