@@ -321,7 +321,7 @@ else
     if(tpp<1 || tpp==2)
     {
         
-        translate([0,0,((os == 0 && i == 0)?s/2:0)-1]){
+        translate([0,0,((os == 0 && i == 0)?s/2:0)+1]){
             if(tpp==2)
         {
             basemaze(maze1,w1,h1,st1,ex1,mm,1);
