@@ -13,7 +13,7 @@ include <shell_data.scad>
 
 //computed 
 nubscale=1.5+0;
-bh=s-1;	// Base height
+bh=s;	// Base height
 eh=(tpp<1&&i==0)?0:bh;// Extra height	
 wt=bh;	// Base wall thickness
 ih=(h1+1+((os == 0 && i == 0)?1:0))*s;
@@ -171,7 +171,8 @@ module basemaze(maze,w,h,st,ex,mm,i2)
     {
     if(i2==0){ 
                 
-                    for(a=[0:360/p:359])
+                    translate([0,0,s/4]){
+                        for(a=[0:360/p:359])
         rotate([0,0,a])
         {
             
@@ -192,8 +193,8 @@ module basemaze(maze,w,h,st,ex,mm,i2)
                      else
                      {
                          hull(){
-                             translate([id/2+iw+s*td/2,0,bh-s/2])knob();
-                             translate([id/2+iw+s*td/2,0,bh+s])knob();
+                             translate([id/2+iw+s*td/2,0,bh-s/2-1])knob();
+                             translate([id/2+iw+s*td/2,0,bh+s-1])knob();
                              
                          }
                      }
@@ -214,9 +215,10 @@ module basemaze(maze,w,h,st,ex,mm,i2)
             if(maze[y][x]==1 || maze[y][x]==3)right(w);
             if(maze[y][x]==2 || maze[y][x]==3)up(i2,s-m);
         }
+    }
         }
         else if(is>0){
-                   translate([0,0,s-0.5])for(a=[0:360/p:359])
+                   translate([0,0,s+0.5])for(a=[0:360/p:359])
         rotate([0,0,a])
         {
             rotate([0,0,st*360/w])
@@ -241,7 +243,7 @@ module basemaze(maze,w,h,st,ex,mm,i2)
         }
             // Maze
         for(y=[0:1:h-1])
-        translate([0,0,bh+2.5*s+y*s-0.5])
+        translate([0,0,bh+2.5*s+y*s+0.5])
         
         for(x=[0:1:w-1])
         rotate([0,0,x*360/w])
@@ -282,12 +284,12 @@ else
 {
     difference()
 	{
-   	   cylinder(d=bd-m*2,h=bh,$fn=100);
+   	   cylinder(d=bd-m*2-iw*2,h=bh,$fn=100);
 	   translate([0,0,-0.01])
 	   difference()
 	   {
-		   cylinder(d=bd+2-m*2,h=2);
-		   cylinder(d1=bd-2-m*2,d2=bd+4-m*2,h=3,$fn=100);
+		   cylinder(d=bd+2-m*2-iw*2,h=2);
+		   cylinder(d1=bd-2-m*2-iw*2,d2=bd+4-m*2,h=3,$fn=100);
 	   }
 	}
 }
@@ -299,11 +301,12 @@ else
 	{
            for(a=[0:360/w1:359])
            rotate([0,0,a])
-	   up(0,bh+eh,bd/2-m,stp=1);
+	   up(0,bh+eh,bd/2-m-iw,stp=1);
 	}
     }
     
-    translate([0,0,((tpp==2 && os==0)?-s:0)])difference()
+    translate([0,0,((tpp==2 && os==0)?-2*s:0)])
+    difference()
     {
         translate([0,0,bh-0.01])
         cylinder(d=id+iw*2+s*td-m*2,h=wt+ih-bh+eh,$fn=100);
@@ -458,7 +461,7 @@ module side_emboss(h=0.6)
     
     if(ense)
     {
-        rotate([0,0,180/bs])translate([-bd/2+h,0,bh+h])rotate([0,-90,0])linear_extrude(h*2)text(se,size=sze,font="Liberation Mono:style=Bold",valign="center");
+        rotate([0,0,180/bs])translate([-bd/2+h,0,bh+ih/2])rotate([0,-90,0])linear_extrude(h*2)text(se,size=sze,font="Liberation Mono:style=Bold",halign="center",valign="center");
     }
 }
 
