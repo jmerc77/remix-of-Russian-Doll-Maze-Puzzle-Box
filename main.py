@@ -78,7 +78,7 @@ def scad_version():
     ver=ver.replace("\r","").replace("\n","").replace("-",".").replace("OpenSCAD version ","").split(".")
     for v in range(len(ver)):
         ver[v]=re.sub('[^0-9]','', ver[v])
-    return (int(ver[0]), int(ver[1])) if ver else ()
+    return int(ver[0]) if ver else ()
 
 #runs the scad
 def execscad(threadid=0):
@@ -561,7 +561,7 @@ def readOpt():
     embossconfig=config["EMBOSS"]
     config = config["DEFAULT"]
     version = scad_version()
-    if config.getboolean("o3mf") and version[0]>=2019:
+    if config.getboolean("o3mf") and version>=2019:
         ext="3mf"
     else:
         ext="stl"
@@ -651,7 +651,7 @@ if __name__ == "__main__":
         
         # get scad version:
         version = scad_version()
-        if version[0] < 2015:
+        if version < 2015:
             print("ERROR: invalid scad version. must be at least 2015.xx.xx .\n")
             exit(1)
         #do we have threading?
