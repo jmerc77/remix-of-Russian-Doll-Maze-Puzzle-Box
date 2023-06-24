@@ -20,6 +20,7 @@ import math
 import re
 from PIL import Image
 import subprocess as sp
+from sys import platform
 
 skip = -1 # debug: skip all shells up to here (0 to n to enable)
 halt = -1 # debug: terminate skipping this shell (0 to n to enable)
@@ -75,7 +76,11 @@ def scad_version():
     cmd = [openscad(), "--version"]
     ver=sp.Popen(cmd,stdout=sp.PIPE).stdout.readline().decode("utf-8")
     
-    ver=ver.replace("\r","").replace("\n","").replace("-",".").replace("OpenSCAD version ","").split(".")
+    if platform == "win32":
+        ver=sp.Popen(cmd,stdout=sp.PIPE).stdout.readline().decode("utf-8")
+    else:
+        ver=sp.Popen(cmd,stderr=sp.PIPE).stderr.readline().decode("utf-8")
+
     for v in range(len(ver)):
         ver[v]=re.sub('[^0-9]','', ver[v])
     return int(ver[0]) if ver else ()
